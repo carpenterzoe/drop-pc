@@ -1,0 +1,18 @@
+
+.container {
+  background-color: white;
+  height: 100%;
+  overflow: hidden;
+
+  // 加上 :global  编译器不会额外编译生成哈希值；用于改第三方UI
+  :global(.ant-pro-form-login-page-logo) {
+    height: 150px;
+    width: 300px;
+  } 
+}
+.actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}

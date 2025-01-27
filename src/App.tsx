@@ -1,4 +1,3 @@
-import './App.css';
 import Login from './containers/Login';
 
 function App() {
