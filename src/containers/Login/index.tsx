@@ -8,10 +8,30 @@ import {
   ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
+import { message } from 'antd';
+import { useMutation } from '@apollo/client';
+import { LOGIN } from '@/graphql/auth';
+
 import styles from './index.module.less';
 
+interface IValue {
+  tel: string;
+  code: string;
+  autoLogin: boolean;
+}
+
 export default () => {
-  const loginHandler = async () => {
+  const [login] = useMutation(LOGIN);
+
+  const loginHandler = async (values: IValue) => {
+    const res = await login({
+      variables: values,
+    });
+    if (res.data.login.code === 200) {
+      message.success('登录成功');
+      return;
+    }
+    message.error(res.data.login.message);
   };
 
   return (
@@ -33,7 +53,7 @@ export default () => {
             size: 'large',
             prefix: <MobileOutlined className="prefixIcon" />,
           }}
-          name="mobile"
+          name="tel"
           placeholder="手机号"
           rules={[
             {
@@ -61,7 +81,7 @@ export default () => {
             }
             return '获取验证码';
           }}
-          name="captcha"
+          name="code"
           rules={[
             {
               required: true,
