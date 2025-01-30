@@ -10,7 +10,7 @@ import {
 } from '@ant-design/pro-components';
 import { message } from 'antd';
 import { useMutation } from '@apollo/client';
-import { LOGIN } from '@/graphql/auth';
+import { LOGIN, SEND_CODE_MSG } from '@/graphql/auth';
 
 import styles from './index.module.less';
 
@@ -21,17 +21,19 @@ interface IValue {
 }
 
 export default () => {
+  const [sendCaptcha] = useMutation(SEND_CODE_MSG);
   const [login] = useMutation(LOGIN);
 
   const loginHandler = async (values: IValue) => {
     const res = await login({
       variables: values,
     });
-    if (res.data.login.code === 200) {
-      message.success('登录成功');
+    const { code, message: msg } = res.data.login;
+    if (code === 200) {
+      message.success(msg);
       return;
     }
-    message.error(res.data.login.message);
+    message.error(msg);
   };
 
   return (
@@ -88,7 +90,18 @@ export default () => {
               message: '请输入验证码！',
             },
           ]}
-          onGetCaptcha={async () => {
+          onGetCaptcha={async (tel: string) => {
+            const res = await sendCaptcha({
+              variables: {
+                tel,
+              },
+            });
+            const { code, message: msg } = res.data.sendCodeMsg;
+            if (code === 200) {
+              message.success(msg);
+            } else {
+              message.error(msg);
+            }
           }}
         />
         <div
