@@ -1,7 +1,10 @@
 {
+  // "compilerOptions": {
+  //   "jsx": "react"
+  // },
   "compilerOptions": {
-    "jsx": "react"
-  },
+     "jsx": "react-jsx" // 解决编译器 ts 报错 UMD相关
+},
   "files": [],
   "references": [
     { "path": "./tsconfig.node.json" }
