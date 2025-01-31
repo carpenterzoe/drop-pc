@@ -72,6 +72,16 @@ export const useAppContext = (key: string) => {
   };
 };
 
+/**
+ * key 用来区分不同的 context, store.
+ * 返回高阶组件 HOC, 入参是Child, 返回一个函数, 这个函数接收props参数, 并返回 CurCxt.Provider 包裹的Child
+
+ * input key and defaultValue, return a HOC to wrap component.
+ * key and defaultValue are used to distinguish different context, especially their store.
+ *
+ * The HOC accept a component Child as parameter, and return a new function component,
+ * which wrap Child with CurCxt.Provider.
+ */
 export const connectFactory = (key: string, defaultValue: Record<string, any>) => {
   const cxt = cxtCache[key];
 
@@ -81,7 +91,6 @@ export const connectFactory = (key: string, defaultValue: Record<string, any>) =
   } else {
     CurCxt = new Cxt(key, defaultValue);
   }
-  // 高阶组件 HOC, 入参是Child, 返回一个函数, 这个函数接收props参数, 并返回 CurCxt.Provider 包裹的Child
   /**
    * 这里是返回一个新的function component.
    * (props: any) => (
