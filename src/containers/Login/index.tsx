@@ -5,31 +5,33 @@ import {
 import {
   LoginFormPage,
   ProFormCaptcha,
-  ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
 import { message } from 'antd';
 import { useMutation } from '@apollo/client';
 import { LOGIN, SEND_CODE_MSG } from '@/graphql/auth';
-
+import { AUTH_TOKEN } from '@/utils/constants';
+import { useNavigate } from 'react-router-dom';
 import styles from './index.module.less';
 
 interface IValue {
   tel: string;
   code: string;
-  autoLogin: boolean;
 }
 
 export default () => {
   const [sendCaptcha] = useMutation(SEND_CODE_MSG);
   const [login] = useMutation(LOGIN);
+  const nav = useNavigate();
 
   const loginHandler = async (values: IValue) => {
     const res = await login({
       variables: values,
     });
-    const { code, message: msg } = res.data.login;
+    const { code, data, message: msg } = res.data.login;
     if (code === 200) {
+      localStorage.setItem(AUTH_TOKEN, data);
+      nav('/');
       message.success(msg);
       return;
     }
@@ -83,6 +85,7 @@ export default () => {
             }
             return '获取验证码';
           }}
+          phoneName="tel"
           name="code"
           rules={[
             {
@@ -104,15 +107,6 @@ export default () => {
             }
           }}
         />
-        <div
-          style={{
-            marginBlockEnd: 24,
-          }}
-        >
-          <ProFormCheckbox noStyle name="autoLogin">
-            自动登录
-          </ProFormCheckbox>
-        </div>
       </LoginFormPage>
     </div>
   );
