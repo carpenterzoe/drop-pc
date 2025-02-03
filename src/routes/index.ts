@@ -14,4 +14,10 @@ export const ROUTE_CONFIG = [
     element: Login,
     title: '登录',
   },
+  {
+    key: 'home',
+    path: '/home',
+    element: Home,
+    title: 'home',
+  },
 ];

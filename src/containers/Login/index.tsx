@@ -11,7 +11,7 @@ import { message } from 'antd';
 import { useMutation } from '@apollo/client';
 import { LOGIN, SEND_CODE_MSG } from '@/graphql/auth';
 import { AUTH_TOKEN } from '@/utils/constants';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTitle } from '@/hooks';
 
 import styles from './index.module.less';
@@ -26,6 +26,7 @@ const Login = () => {
   const [login] = useMutation(LOGIN);
   const nav = useNavigate();
   useTitle('login');
+  const [urlParams] = useSearchParams();
 
   const loginHandler = async (values: IValue) => {
     const res = await login({
@@ -34,7 +35,8 @@ const Login = () => {
     const { code, data, message: msg } = res.data.login;
     if (code === 200) {
       localStorage.setItem(AUTH_TOKEN, data);
-      nav('/');
+      const redirectPath = urlParams.get('from') || '/';
+      nav(redirectPath);
       message.success(msg);
       return;
     }
