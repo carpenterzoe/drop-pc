@@ -5,9 +5,10 @@ import { useQuery } from '@apollo/client';
 /**
  * 当前hook的三要素：
  *
- * 1. useGetUser 存数据
- * 2. wrapProvider 提供Provider，用于包裹子组件
- * 3. useUserContext 取数据
+ * 1. 提供 key, defaultValue => createContext
+ * 2. useGetUser 存数据
+ * 3. wrapProvider 提供Provider，用于包裹子组件 (connectFactory 制造)
+ * 4. useUserContext 取数据
  *
  * 0. useUserContext 基础api，存取数据都要先调用
  *
@@ -19,12 +20,15 @@ import { useQuery } from '@apollo/client';
 const KEY = 'userInfo';
 const DEFAULT_VALUE = {};
 
+// 1. createContext
+export const wrapProvider = connectFactory(KEY, DEFAULT_VALUE);
+
 // 0. 基础api，基础api，存取数据都要先调用
 // equal to useContext. use it to get store or setStore method.
 // 这里再套一层function，是为了其他组件方便调用，把user相关的内容都封装到当前hook
 export const useUserContext = () => useAppContext(KEY);
 
-// 1. 存数据
+// 2. 存数据
 // req data and set to store
 export const useGetUser = () => {
   const { setStore } = useUserContext();
@@ -50,7 +54,8 @@ export const useGetUser = () => {
   });
 };
 
-// 2. Provider 包裹子组件
-export const wrapProvider = connectFactory(KEY, DEFAULT_VALUE);
+// 3. Provider 包裹子组件
+// 外部调用 wrapProvider()
 
-// 3. 取数据 useContext
+// 4. 取数据 useContext
+// 外部调用 useUserContext()

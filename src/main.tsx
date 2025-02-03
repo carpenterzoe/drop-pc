@@ -9,7 +9,9 @@ import UserInfoProvider from './components/UserInfoProvider';
 
 createRoot(document.getElementById('root')!).render(
   <ApolloProvider client={client}>
-    {/* 这是一个包含有用户信息的provider. 包裹的内层组件都能拿到用户信息. */}
+
+    {/* 这是一个包含有用户信息的provider. 包裹的内层组件都能拿到用户信息.
+        这里没有传 value={value}，因为store的传值在factory中统一封装了。 */}
     <UserInfoProvider>
       <BrowserRouter>
         <Routes>
