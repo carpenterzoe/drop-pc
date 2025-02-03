@@ -1,3 +1,17 @@
+/**
+ * 和 userHooks 对比，可以看到 这个模块都是关于 context 层面的封装；
+ * 包括：
+ * 1. 创建 context
+ * 2. 用 key 缓存 context
+ * 3. 封装更便捷取数据的 useContext (传key 到缓存中取context)
+ * 4. Provider 包裹子组件，抽象复用
+ *
+ * 其层级比 userHook 要再往上层多抽象一层，封装内容聚焦。
+ */
+
+// 这里是一个工厂，生成器
+// 需要结合工厂模式理解，以及思考该场景之下工厂模式的优点
+
 /* eslint-disable react/jsx-props-no-spreading */
 import {
   createContext, useContext, useMemo, useState,
@@ -13,14 +27,20 @@ interface IProp {
   children: React.ReactNode;
 }
 
+// 通过该函数生成一个Provider，包裹在组件外面。
 const getCxtProvider = (
   key: string,
   defaultValue: Record<string, any>,
   AppContext: React.Context<IStore>,
 ) => ({ children }: IProp) => {
+  // 如果这里不抽象，那么每次组件调用时，为了数据响应式，以及刷新优化
+  // 都得 useState & useMemo
+
+  // 不用useState defaultValue 就不能响应式了。
   const [store, setStore] = useState(defaultValue);
   // useMemo to improve performance, value only changes when [store] changes
   const value = useMemo(() => ({
+    // 这3个属性是给Provider包裹的子组件使用的
     key,
     store,
     setStore: (payload = {}) => setStore((state) => ({
@@ -49,9 +69,9 @@ class Cxt {
 
   constructor(key: string, defaultValue: Record<string, any>) {
     this.defaultStore = {
-      key,
+      key, // 相当于一个命名空间，因为系统中会存在多个context
       store: defaultValue,
-      setStore: () => {},
+      setStore: () => {}, // ? 这里是否不需要？ 在getCxtProvider useState有对应的 setStore function
     };
 
     // createContext 创建上下文, 必须先创建上下文, 其他组件才能使用context中的数据和方法
@@ -59,10 +79,12 @@ class Cxt {
 
     // 创建Provider, Provide 用来包裹组件, 使组件可以访问上下文中的数据和方法
     this.Provider = getCxtProvider(key, defaultValue, this.AppContext);
+
+    cxtCache[key] = this; // 缓存context
   }
 }
 
-// 这里可以理解为 useContext 生成器
+// 这里的好处是只需要传入key，就能拿到需要的context数据，而不需要在每个子组件都导入具体的context
 export const useAppContext = (key: string) => {
   const cxt = cxtCache[key];
   const app = useContext(cxt.AppContext);
@@ -89,7 +111,7 @@ export const connectFactory = (key: string, defaultValue: Record<string, any>) =
   if (cxt) {
     CurCxt = cxt;
   } else {
-    CurCxt = new Cxt(key, defaultValue);
+    CurCxt = new Cxt(key, defaultValue); // 构造函数中有缓存逻辑
   }
   /**
    * 这里是返回一个新的function component.
@@ -106,6 +128,23 @@ export const connectFactory = (key: string, defaultValue: Record<string, any>) =
     这些 props 会被传递给返回的函数组件。
     返回的函数组件再将这些 props 传递给 Child 组件。
    */
+  return (Child: React.FunctionComponent<any>) => (props: any) => (
+    <CurCxt.Provider>
+      <Child {...props} />
+    </CurCxt.Provider>
+  );
+};
+
+export const connectFactory1 = (key: string, defaultValue: Record<string, any>) => {
+  const cxt = cxtCache[key];
+
+  let CurCxt: Cxt;
+  if (cxt) {
+    CurCxt = cxt;
+  } else {
+    CurCxt = new Cxt(key, defaultValue);
+  }
+
   return (Child: React.FunctionComponent<any>) => (props: any) => (
     <CurCxt.Provider>
       <Child {...props} />
