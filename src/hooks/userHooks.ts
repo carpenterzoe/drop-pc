@@ -1,7 +1,6 @@
 import { GET_USER } from '@/graphql/user';
 import { connectFactory, useAppContext } from '@/utils/contextFactory';
 import { useQuery } from '@apollo/client';
-import { useNavigate } from 'react-router-dom';
 
 /**
  * 当前hook的三要素：
@@ -29,16 +28,24 @@ export const useUserContext = () => useAppContext(KEY);
 // req data and set to store
 export const useGetUser = () => {
   const { setStore } = useUserContext();
-  const nav = useNavigate();
+  // const nav = useNavigate(); useNavigate 只能在路由组件中使用
 
-  useQuery(GET_USER, {
+  // useQuery<T>(); 指定useQuery的返回值类型
+  useQuery<{ getUserInfo: IUser }>(GET_USER, {
     onCompleted: (data) => {
       if (data.getUserInfo) {
-        setStore(data.getUserInfo);
-        return;
-      }
+        // setStore(data.getUserInfo);
 
-      nav('/login');
+        const { id, name, tel } = data.getUserInfo;
+        setStore({
+          id, name, tel,
+        });
+      }
+    },
+    onError() {
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     },
   });
 };

@@ -28,9 +28,9 @@ import { wrapProvider, useGetUser } from '@/hooks/userHooks';
 /**
  * 获取用户信息的组件
  */
-const UserInfo = () => {
+const UserInfo = ({ children }: IPropChild) => {
   useGetUser();
-  return null;
+  return <div>{children}</div>; // 要返回children，否则包裹的子组件都渲染不了
 };
 /**
  * wrapProvider 返回的是一个函数组件，该函数组件被CurCxt.Provider包裹.

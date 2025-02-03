@@ -23,16 +23,12 @@ interface IStore {
   setStore: (payload: Record<string, any>) => void;
 }
 
-interface IProp {
-  children: React.ReactNode;
-}
-
 // 通过该函数生成一个Provider，包裹在组件外面。
 const getCxtProvider = (
   key: string,
   defaultValue: Record<string, any>,
   AppContext: React.Context<IStore>,
-) => ({ children }: IProp) => {
+) => ({ children }: IPropChild) => {
   // 如果这里不抽象，那么每次组件调用时，为了数据响应式，以及刷新优化
   // 都得 useState & useMemo
 
@@ -65,7 +61,7 @@ class Cxt {
 
   AppContext: React.Context<IStore>;
 
-  Provider:({ children }: IProp) => JSX.Element;
+  Provider:({ children }: IPropChild) => JSX.Element;
 
   constructor(key: string, defaultValue: Record<string, any>) {
     this.defaultStore = {

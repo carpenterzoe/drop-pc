@@ -1,13 +1,10 @@
-import { useEffect } from 'react';
+import { useUserContext } from '@/hooks/userHooks';
 
 const Home = () => {
-  // const [state, useState] = useState();
-  useEffect(() => {
-    // console.log(state, setState);
-  }, []);
+  const { store } = useUserContext();
   return (
     <div>
-      Home
+      {store.tel}
     </div>
   );
 };
