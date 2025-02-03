@@ -12,6 +12,8 @@ import { useMutation } from '@apollo/client';
 import { LOGIN, SEND_CODE_MSG } from '@/graphql/auth';
 import { AUTH_TOKEN } from '@/utils/constants';
 import { useNavigate } from 'react-router-dom';
+import { useTitle } from '@/hooks';
+
 import styles from './index.module.less';
 
 interface IValue {
@@ -19,10 +21,11 @@ interface IValue {
   code: string;
 }
 
-export default () => {
+const Login = () => {
   const [sendCaptcha] = useMutation(SEND_CODE_MSG);
   const [login] = useMutation(LOGIN);
   const nav = useNavigate();
+  useTitle('login');
 
   const loginHandler = async (values: IValue) => {
     const res = await login({
@@ -111,3 +114,5 @@ export default () => {
     </div>
   );
 };
+
+export default Login;
