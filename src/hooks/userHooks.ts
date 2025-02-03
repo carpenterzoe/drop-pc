@@ -35,7 +35,7 @@ export const useGetUser = () => {
   // const nav = useNavigate(); useNavigate 只能在路由组件中使用
 
   // useQuery<T>(); 指定useQuery的返回值类型
-  useQuery<{ getUserInfo: IUser }>(GET_USER, {
+  const { loading } = useQuery<{ getUserInfo: IUser }>(GET_USER, {
     onCompleted: (data) => {
       if (data.getUserInfo) {
         // setStore(data.getUserInfo);
@@ -52,6 +52,8 @@ export const useGetUser = () => {
       }
     },
   });
+
+  return { loading };
 };
 
 // 3. Provider 包裹子组件

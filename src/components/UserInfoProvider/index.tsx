@@ -1,4 +1,5 @@
 import { wrapProvider, useGetUser } from '@/hooks/userHooks';
+import { Spin } from 'antd';
 
 /**
  * 该组件做的事情：
@@ -29,8 +30,15 @@ import { wrapProvider, useGetUser } from '@/hooks/userHooks';
  * 获取用户信息的组件
  */
 const UserInfo = ({ children }: IPropChild) => {
-  useGetUser();
-  return <div>{children}</div>; // 要返回children，否则包裹的子组件都渲染不了
+  const { loading } = useGetUser();
+  return (
+    <div>
+      <Spin spinning={loading}>
+        {/* 要返回children，否则包裹的子组件都渲染不了 */}
+        {children}
+      </Spin>
+    </div>
+  );
 };
 /**
  * wrapProvider 返回的是一个函数组件，该函数组件被CurCxt.Provider包裹.
