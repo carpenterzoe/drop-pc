@@ -20,6 +20,7 @@ import styles from './index.module.less';
 interface IValue {
   tel: string;
   code: string;
+  rememberLogin: boolean;
 }
 
 const Login = () => {
@@ -31,11 +32,28 @@ const Login = () => {
 
   const loginHandler = async (values: IValue) => {
     const res = await login({
-      variables: values,
+      variables: {
+        code: values.code,
+        tel: values.tel,
+      },
     });
     const { code, data, message: msg } = res.data.login;
     if (code === 200) {
-      localStorage.setItem(AUTH_TOKEN, data);
+      /**
+       * 这里需要明确真实用户的常见使用场景：
+       * 1. 在当前窗口刷新，正常情况不应该重新登录；也就是 sessionStorage
+       * 2. 如果用户勾选记住登录状态，说明用户希望较长时间内都不要重新登录，也就是重开页签重开浏览器都不再登录，即 localStorage
+       *
+       * 记住登录状态，是一直记住，包括 a. 打开新页签，b. 下次打开浏览器；
+       * 不记住的话，不切换页签，当前窗口刷新也应该保留
+       */
+      if (values.rememberLogin) {
+        sessionStorage.setItem(AUTH_TOKEN, ''); // 这里清空的操作，确保 storage 只存有一份最新的 token，存哪个 就把另一个清空。
+        localStorage.setItem(AUTH_TOKEN, data);
+      } else {
+        sessionStorage.setItem(AUTH_TOKEN, data);
+        localStorage.setItem(AUTH_TOKEN, '');
+      }
       const redirectPath = urlParams.get('from') || '/';
       nav(redirectPath);
       message.success(msg);
@@ -124,11 +142,10 @@ const Login = () => {
             如果不记住，那只有当前页签会留存登录状态，
             重新打开，又要登录
           */}
-          <ProFormCheckbox noStyle name="autoLogin">
+          <ProFormCheckbox noStyle name="rememberLogin">
             记住登录状态
           </ProFormCheckbox>
         </div>
-
       </LoginFormPage>
     </div>
   );
