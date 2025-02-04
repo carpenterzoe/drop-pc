@@ -6,6 +6,7 @@ import { ROUTE_CONFIG } from './routes';
 import Page404 from './containers/404';
 import './index.css';
 import UserInfoProvider from './components/UserInfoProvider';
+import Layout from './components/Layout';
 
 createRoot(document.getElementById('root')!).render(
   <ApolloProvider client={client}>
@@ -16,11 +17,14 @@ createRoot(document.getElementById('root')!).render(
           3. 要包裹到 BrowserRouter 之内，否则无法使用react router相关方法。  */}
       <UserInfoProvider>
         <Routes>
-          {
-        ROUTE_CONFIG.map((item) => (
-          <Route path={item.path} element={<item.element />} key={item.key} />
-        ))
-      }
+          <Route path="/" element={<Layout />}>
+            {/* 这里面的内容可以用 useOutlet 拿到 */}
+            {
+              ROUTE_CONFIG.map((item) => (
+                <Route path={item.path} element={<item.element />} key={item.key} />
+              ))
+            }
+          </Route>
           <Route path="*" element={<Page404 />} />
         </Routes>
       </UserInfoProvider>
