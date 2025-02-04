@@ -47,6 +47,10 @@ export const useGetUser = () => {
         setStore({
           id, name, tel,
         });
+        // nav('/');  // 不能无差别跳转，非登录页也会走到这里
+        if (pathname.startsWith('/login')) {
+          nav('/');
+        }
       }
     },
     onError() {

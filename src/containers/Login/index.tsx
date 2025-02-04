@@ -5,6 +5,7 @@ import {
 import {
   LoginFormPage,
   ProFormCaptcha,
+  ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
 import { message } from 'antd';
@@ -112,6 +113,22 @@ const Login = () => {
             }
           }}
         />
+
+        <div
+          style={{
+            marginBlockEnd: 24,
+          }}
+        >
+          {/*
+            如果记住登录，不管从哪个页签，都自动登录
+            如果不记住，那只有当前页签会留存登录状态，
+            重新打开，又要登录
+          */}
+          <ProFormCheckbox noStyle name="autoLogin">
+            记住登录状态
+          </ProFormCheckbox>
+        </div>
+
       </LoginFormPage>
     </div>
   );
