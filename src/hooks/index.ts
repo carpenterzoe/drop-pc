@@ -1,4 +1,4 @@
-import { getRouteByKey, routes } from '@/routes';
+import { getRouteByKey, routes } from '@/routes/menus';
 import { useEffect, useMemo } from 'react';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 

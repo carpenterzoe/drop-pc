@@ -1,8 +1,9 @@
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
+import { ROUTE_COMPONENT } from '@/routes/component';
+import { routes } from '@/routes/menus';
 import { client } from './utils/apollo';
-import { routes } from './routes';
 import './index.css';
 import UserInfoProvider from './components/UserInfoProvider';
 import Layout from './components/Layout';
@@ -21,12 +22,12 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/" element={<Layout />}>
             {/* 这里面的内容可以用 useOutlet 拿到 */}
             {
-              routes.map((item) => (
-                <Route path={item.path} element={<item.element />} key={item.key} />
-              ))
+              routes.map((item) => {
+                const Component = ROUTE_COMPONENT[item.key];
+                return <Route path={item.path} element={<Component />} key={item.key} />;
+              })
             }
           </Route>
-          {/* <Route path="*" element={<Page404 />} /> */}
         </Routes>
       </UserInfoProvider>
     </BrowserRouter>

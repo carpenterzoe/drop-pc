@@ -1,13 +1,10 @@
 import {
   HomeOutlined,
 } from '@ant-design/icons';
-import Page404 from '@/containers/404';
-import Home from '../containers/Home';
 
 interface IRoute {
   path: string;
   name: string;
-  element: () => JSX.Element;
   icon?: React.ReactNode;
   hideInMenu?: boolean;
 }
@@ -20,25 +17,27 @@ export const ROUTE_KEY = {
   PAGE_404: 'p404',
 };
 
+/**
+ * 循环依赖：Home组件引用了 routes ， routes 内部也 import 了当前组件。
+ *
+ * 解决方案：把存在循环依赖的某部分单独隔离开。比如这里是 routes 中的 element，所以要想办法隔离。
+ */
 export const ROUTE_CONFIG: Record<string, IRoute> = {
   [ROUTE_KEY.HOME]: {
     path: 'home', // 这里没有斜杠，因为Layout已经写了
     name: '首页',
     icon: <HomeOutlined />,
-    element: Home,
   },
   [ROUTE_KEY.MY]: {
     path: 'my',
     name: '个人信息',
     hideInMenu: true,
     icon: <HomeOutlined />,
-    element: Home,
   },
   [ROUTE_KEY.PAGE_404]: {
     path: '*',
     hideInMenu: true,
     name: '404',
-    element: Page404,
   },
 };
 
