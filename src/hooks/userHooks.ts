@@ -38,29 +38,49 @@ export const useGetUser = () => {
   const nav = useNavigate(); // useNavigate 只能在路由组件中使用
 
   // useQuery<T>(); 指定useQuery的返回值类型
-  const { loading } = useQuery<{ getUserInfo: IUser }>(GET_USER, {
+  const { loading, refetch } = useQuery<{ getUserInfo: IUser }>(GET_USER, {
     onCompleted: (data) => {
       if (data.getUserInfo) {
         // setStore(data.getUserInfo);
-
         const { id, name, tel } = data.getUserInfo;
         setStore({
-          id, name, tel,
+          id,
+          name,
+          tel,
+          // 这样传是为了context包裹的其他组件都能通过store调用到这个方法，重新刷新用户数据
+          refetchHandler: refetch, // 把这个function 存到store里面
+          // 需要明确该方法的使用场景，如果是直接页面初始化，store里面会存用户信息
+          // 该方法是要提供给除了初始化场景之外的其他方法去调用的
+          // 所以这里初始化拿用户信息失败的时候，要把方法存进去
         });
         // nav('/');  // 不能无差别跳转，非登录页也会走到这里
         if (pathname.startsWith('/login')) {
           nav('/');
         }
+        return;
       }
+
+      // 需要明确该方法的使用场景，如果是直接页面初始化，store里面会存用户信息
+      // 该方法是要提供给除了初始化场景之外的其他方法去调用的
+      // 所以这里初始化拿用户信息失败的时候，要把方法存进去
+      setStore({
+        refetchHandler: refetch,
+      });
     },
     onError() {
+      // 需要明确该方法的使用场景，如果是直接页面初始化，store里面会存用户信息
+      // 该方法是要提供给除了初始化场景之外的其他方法去调用的
+      // 所以这里初始化拿用户信息失败的时候，要把方法存进去
+      setStore({
+        refetchHandler: refetch,
+      });
       if (pathname !== '/login') {
         nav(`/login?from=${pathname}`);
       }
     },
   });
 
-  return { loading };
+  return { loading, refetch };
 };
 
 // 3. Provider 包裹子组件

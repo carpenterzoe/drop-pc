@@ -14,6 +14,7 @@ import { LOGIN, SEND_CODE_MSG } from '@/graphql/auth';
 import { AUTH_TOKEN } from '@/utils/constants';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTitle } from '@/hooks';
+import { useUserContext } from '@/hooks/userHooks';
 
 import styles from './index.module.less';
 
@@ -26,9 +27,10 @@ interface IValue {
 const Login = () => {
   const [sendCaptcha] = useMutation(SEND_CODE_MSG);
   const [login] = useMutation(LOGIN);
-  const nav = useNavigate();
   useTitle('login');
   const [urlParams] = useSearchParams();
+  const nav = useNavigate();
+  const { store } = useUserContext();
 
   const loginHandler = async (values: IValue) => {
     const res = await login({
@@ -39,6 +41,8 @@ const Login = () => {
     });
     const { code, data, message: msg } = res.data.login;
     if (code === 200) {
+      console.log('store: ', store);
+      store.refetchHandler();
       /**
        * 这里需要明确真实用户的常见使用场景：
        * 1. 在当前窗口刷新，正常情况不应该重新登录；也就是 sessionStorage
