@@ -23,7 +23,7 @@ export const useGoTo = () => {
   const back = () => nav(-1);
   const go = (
     pageKey: string,
-    params: Record<string, string | number>,
+    params?: Record<string, string | number>,
   ) => {
     // 无key 跳转首页
     if (!pageKey) {
@@ -35,7 +35,7 @@ export const useGoTo = () => {
     if (route && route.path) {
       // 纯跳转，无参数
       if (!params) {
-        nav(route.path);
+        nav(`/${route.path}`); // 如果直接传 pathname，没有斜杠，会变成相对地址 比如 /home/my
         return;
       }
 
