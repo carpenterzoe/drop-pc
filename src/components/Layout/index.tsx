@@ -1,8 +1,8 @@
 import { useUserContext } from '@/hooks/userHooks';
-import { ROUTE_CONFIG } from '@/routes';
+import { routes } from '@/routes/menus';
 import { AUTH_TOKEN } from '@/utils/constants';
 import { LogoutOutlined } from '@ant-design/icons';
-import { MenuDataItem, PageContainer, ProLayout } from '@ant-design/pro-components';
+import { MenuDataItem, ProLayout } from '@ant-design/pro-components';
 import { Space } from 'antd';
 import React from 'react';
 import { Link, useNavigate, useOutlet } from 'react-router-dom';
@@ -52,23 +52,12 @@ const Layout = () => {
       onMenuHeaderClick={() => nav('/home')}
       route={{
         path: '/',
-        routes: ROUTE_CONFIG,
+        routes,
       }}
       menuItemRender={menuItemRender}
-      // actionsRender={() => [
-      //   !isOrg && <OrgSelect />,
-      //   <Tooltip title="门店管理">
-      //     <ShopOutlined onClick={goToOrg} />
-      //   </Tooltip>,
-      // ]}
     >
-      <PageContainer>
-        {/* key={store.currentOrg} */}
-        <div>
-          {/* outlet 相当于router的插槽 */}
-          {outlet}
-        </div>
-      </PageContainer>
+      {/* outlet 相当于router的插槽 */}
+      {outlet}
     </ProLayout>
   );
 };
