@@ -42,11 +42,15 @@ export const useGetUser = () => {
     onCompleted: (data) => {
       if (data.getUserInfo) {
         // setStore(data.getUserInfo);
-        const { id, name, tel } = data.getUserInfo;
+        const {
+          id, name, tel, desc, avatar,
+        } = data.getUserInfo;
         setStore({
           id,
           name,
           tel,
+          desc,
+          avatar,
           // 这样传是为了context包裹的其他组件都能通过store调用到这个方法，重新刷新用户数据
           refetchHandler: refetch, // 把这个function 存到store里面
           // 需要明确该方法的使用场景，如果是直接页面初始化，store里面会存用户信息
