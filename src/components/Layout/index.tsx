@@ -1,7 +1,14 @@
 import { useUserContext } from '@/hooks/userHooks';
 import { ROUTE_CONFIG } from '@/routes';
-import { PageContainer, ProLayout } from '@ant-design/pro-components';
-import { useOutlet } from 'react-router-dom';
+import { MenuDataItem, PageContainer, ProLayout } from '@ant-design/pro-components';
+import React from 'react';
+import { Link, useOutlet } from 'react-router-dom';
+
+// 静态方法，可以放在外层
+const menuItemRender = (item: MenuDataItem, dom: React.ReactNode) => {
+  const path = item.path || '/';
+  return <Link to={path}>{dom}</Link>;
+};
 
 const Layout = () => {
   const outlet = useOutlet();
@@ -26,7 +33,7 @@ const Layout = () => {
       siderWidth={150}
       avatarProps={{
         src: store.avatar || null,
-        title: store.name,
+        title: store.tel,
         size: 'small',
         // onClick: () => go(ROUTE_KEY.MY),
       }}
@@ -43,6 +50,7 @@ const Layout = () => {
         path: '/',
         routes: ROUTE_CONFIG,
       }}
+      menuItemRender={menuItemRender}
       // actionsRender={() => [
       //   !isOrg && <OrgSelect />,
       //   <Tooltip title="门店管理">

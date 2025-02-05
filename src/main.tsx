@@ -3,10 +3,10 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import { client } from './utils/apollo';
 import { ROUTE_CONFIG } from './routes';
-import Page404 from './containers/404';
 import './index.css';
 import UserInfoProvider from './components/UserInfoProvider';
 import Layout from './components/Layout';
+import Login from './containers/Login';
 
 createRoot(document.getElementById('root')!).render(
   <ApolloProvider client={client}>
@@ -17,6 +17,7 @@ createRoot(document.getElementById('root')!).render(
           3. 要包裹到 BrowserRouter 之内，否则无法使用react router相关方法。  */}
       <UserInfoProvider>
         <Routes>
+          <Route path="/login" element={<Login />} />
           <Route path="/" element={<Layout />}>
             {/* 这里面的内容可以用 useOutlet 拿到 */}
             {
@@ -25,7 +26,7 @@ createRoot(document.getElementById('root')!).render(
               ))
             }
           </Route>
-          <Route path="*" element={<Page404 />} />
+          {/* <Route path="*" element={<Page404 />} /> */}
         </Routes>
       </UserInfoProvider>
     </BrowserRouter>
