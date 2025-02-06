@@ -1,5 +1,6 @@
+import { useGoTo } from '@/hooks';
 import { useUserContext } from '@/hooks/userHooks';
-import { routes } from '@/routes/menus';
+import { ROUTE_KEY, routes } from '@/routes/menus';
 import { AUTH_TOKEN } from '@/utils/constants';
 import { LogoutOutlined } from '@ant-design/icons';
 import { MenuDataItem, ProLayout } from '@ant-design/pro-components';
@@ -17,7 +18,7 @@ const Layout = () => {
   const outlet = useOutlet();
   const { store } = useUserContext();
   // const isOrg = useIsOrgRoute();
-  // const { go } = useGoTo();
+  const { go } = useGoTo();
   const nav = useNavigate();
 
   const logoutHandler = () => {
@@ -38,7 +39,7 @@ const Layout = () => {
         src: store.avatar || null,
         title: store.tel,
         size: 'small',
-        // onClick: () => go(ROUTE_KEY.MY),
+        onClick: () => go(ROUTE_KEY.MY),
       }}
       links={[
         <Space size={20} onClick={logoutHandler}>

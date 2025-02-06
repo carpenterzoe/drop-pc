@@ -1,4 +1,5 @@
 // import OSSImageUpload from '@/components/OSSImageUpload';
+import OSSImageUpload from '@/components/OSSImageUpload';
 import { UPDATE_USER } from '@/graphql/user';
 import { useUserContext } from '@/hooks/userHooks';
 import {
@@ -100,7 +101,7 @@ const My = () => {
           </Col>
           <Col>
             <Form.Item name="avatar">
-              {/* <OSSImageUpload label="更改头像" /> */}
+              <OSSImageUpload />
             </Form.Item>
           </Col>
         </Row>
