@@ -1,5 +1,6 @@
 import {
   HomeOutlined,
+  ShopOutlined,
 } from '@ant-design/icons';
 
 interface IRoute {
@@ -15,6 +16,7 @@ export const ROUTE_KEY = {
   HOME: 'home',
   MY: 'my',
   PAGE_404: 'p404',
+  ORG: 'org',
 };
 
 /**
@@ -27,6 +29,11 @@ export const ROUTE_CONFIG: Record<string, IRoute> = {
     path: 'home', // 这里没有斜杠，因为Layout已经写了
     name: '首页',
     icon: <HomeOutlined />,
+  },
+  [ROUTE_KEY.ORG]: {
+    path: 'org',
+    name: '门店管理',
+    icon: <ShopOutlined />,
   },
   [ROUTE_KEY.MY]: {
     path: 'my',

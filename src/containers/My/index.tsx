@@ -73,7 +73,7 @@ const My = () => {
             },
           });
           if (res.data.updateUserInfo.code === 200) {
-            store.refetchHandler();
+            store.refetchHandler(); // 提交成功立刻刷新用户store，右上角内容即时更新
             message.success(res.data.updateUserInfo.message);
             return;
           }
