@@ -18,7 +18,7 @@ const Home = () => {
     }}
     >
       <Button onClick={() => go(ROUTE_KEY.MY)}>去个人中心</Button>
-      {store.tel}
+      {store.currentOrg}
     </div>
   );
 };

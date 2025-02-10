@@ -4,6 +4,7 @@ import {
   DEL_ORG,
   GET_ORG,
   GET_ORGS,
+  GET_SIMPLE_ORGS,
 } from '@/graphql/org';
 import { DEFAULT_PAGE_SIZE } from '@/utils/constants';
 import { message } from 'antd';
@@ -16,9 +17,9 @@ import { message } from 'antd';
 export const useOrganizations = (
   pageNum = 1,
   pageSize = DEFAULT_PAGE_SIZE,
+  isSimple = false,
 ) => {
-  // useQuery<T> 这里<T>定义的是 useQuery 的返回类型
-  const { loading, data, refetch } = useQuery<TOrgsQuery>(GET_ORGS, {
+  const { loading, data, refetch } = useQuery<TOrgsQuery>(isSimple ? GET_SIMPLE_ORGS : GET_ORGS, {
     variables: {
       page: {
         pageNum,

@@ -21,7 +21,7 @@ export const GET_ORGS = gql`
   }
 `;
 
-export const GET_SAMPLE_ORGS = gql`
+export const GET_SIMPLE_ORGS = gql`
   query getOrganizations($page: PageInput!, $name: String) {
     getOrganizations(page: $page, name: $name){
       code
