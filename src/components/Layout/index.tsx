@@ -2,11 +2,12 @@ import { useGoTo } from '@/hooks';
 import { useUserContext } from '@/hooks/userHooks';
 import { ROUTE_KEY, routes } from '@/routes/menus';
 import { AUTH_TOKEN } from '@/utils/constants';
-import { LogoutOutlined } from '@ant-design/icons';
+import { LogoutOutlined, ShopOutlined } from '@ant-design/icons';
 import { MenuDataItem, ProLayout } from '@ant-design/pro-components';
-import { Space } from 'antd';
+import { Space, Tooltip } from 'antd';
 import React from 'react';
 import { Link, useNavigate, useOutlet } from 'react-router-dom';
+import OrgSelect from '../OrgSelect';
 
 // 静态方法，可以放在外层
 const menuItemRender = (item: MenuDataItem, dom: React.ReactNode) => {
@@ -27,9 +28,9 @@ const Layout = () => {
     nav('/login');
   };
 
-  // const goToOrg = () => {
-  //   go(ROUTE_KEY.ORG);
-  // };
+  const goToOrg = () => {
+    go(ROUTE_KEY.ORG);
+  };
 
   return (
     <ProLayout
@@ -55,6 +56,12 @@ const Layout = () => {
         path: '/',
         routes,
       }}
+      actionsRender={() => [
+        <OrgSelect />,
+        <Tooltip title="门店管理">
+          <ShopOutlined onClick={goToOrg} />
+        </Tooltip>,
+      ]}
       menuItemRender={menuItemRender}
     >
       {/* outlet 相当于router的插槽 */}

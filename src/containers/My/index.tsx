@@ -101,7 +101,7 @@ const My = () => {
           </Col>
           <Col>
             <Form.Item name="avatar">
-              <OSSImageUpload />
+              <OSSImageUpload label="更改头像" />
             </Form.Item>
           </Col>
         </Row>
