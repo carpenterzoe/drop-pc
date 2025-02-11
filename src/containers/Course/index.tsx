@@ -1,10 +1,11 @@
 // import { ICourse } from '@/utils/types';
 import { ActionType, PageContainer, ProTable } from '@ant-design/pro-components';
-// import { useCourses } from '@/services/course';
+import { useCourses } from '@/services/course';
 import { DEFAULT_PAGE_SIZE } from '@/utils/constants';
 import { Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useRef } from 'react';
+import { COLUMNS } from './constants';
 // import { getColumns } from './constants';
 // import EditCourse from './components/EditCourse';
 // import OrderTime from './components/OrderTime';
@@ -15,7 +16,10 @@ import { useRef } from 'react';
 const Course = () => {
   const actionRef = useRef<ActionType>();
   // const [curId, setCurId] = useState('');
-  // const { refetch } = useCourses();
+
+  // 这里 useCourses 拿到的数据，是怎么到当前组件里来 并且render的？
+  const { refetch, data } = useCourses();
+
   // const [showInfo, setShowInfo] = useState(false);
   // const [showOrderTime, setShowOrderTime] = useState(false);
 
@@ -44,17 +48,7 @@ const Course = () => {
       <ProTable
         rowKey="id"
         actionRef={actionRef}
-        columns={[{
-          title: '课程标题',
-          dataIndex: 'name',
-          ellipsis: true,
-        },
-        {
-          title: '限制人数',
-          dataIndex: 'limitNumber',
-          width: 75,
-          search: false,
-        }]}
+        columns={COLUMNS}
         pagination={{
           pageSize: DEFAULT_PAGE_SIZE,
         }}
@@ -68,7 +62,8 @@ const Course = () => {
             新建
           </Button>,
         ]}
-        // request={refetch}
+        request={refetch}
+        dataSource={data}
       />
       {/* {showInfo && <EditCourse id={curId} onClose={closeAndRefetchHandler} />} */}
       {/* {showOrderTime && <OrderTime id={curId} onClose={() => setShowOrderTime(false)} />} */}
