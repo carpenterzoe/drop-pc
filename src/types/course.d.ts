@@ -9,7 +9,7 @@ interface ICourse {
   reserveInfo?: string;
   refundInfo?: string;
   otherInfo?: string;
-  reducibleTime: IWeekCourse[];
+  // reducibleTime: IWeekCourse[];
 }
 
 // data: ICourse[] 是数组，跟 COLUMNS 配置的数据类型要对应上

@@ -1,8 +1,12 @@
-// import { Button } from "antd";
-
 import { ProColumns } from '@ant-design/pro-components';
+import { Button } from 'antd';
 
-export const COLUMNS: ProColumns<ICourse, 'text'>[] = [
+// ! 这里改成function，是为了让组件调用的时候传入操作方法作为参数，给操作列指定function
+export const getColumns = ({
+  onEditHandler,
+}: {
+  onEditHandler: Function,
+}): ProColumns<ICourse, 'text'>[] => [
   {
     title: '课程标题',
     dataIndex: 'name',
@@ -26,20 +30,22 @@ export const COLUMNS: ProColumns<ICourse, 'text'>[] = [
     dataIndex: 'id',
     align: 'center',
     width: 200,
-    // render: (text, entity) => [
-    //   <Button
-    //     key="edit"
-    //     type="link"
-    //     onClick={() => onEditHandler(entity.id)}
-    //   >
-    //     编辑
-    //   </Button>,
-    //   <Button
-    //     key="orderTime"
-    //     type="link"
-    //     onClick={() => onOrderTimeHandler(entity.id)}
-    //   >
-    //     可约时间
-    //   </Button>],
+    render: (text, entity) => [
+      <Button
+        key="edit"
+        type="link"
+        // ? 这里调的是组件中的function，怎么传进来的
+        onClick={() => onEditHandler(entity.id)}
+      >
+        编辑
+      </Button>,
+      // <Button
+      //   key="orderTime"
+      //   type="link"
+      //   onClick={() => onOrderTimeHandler(entity.id)}
+      // >
+      //   可约时间
+      // </Button>
+    ],
   },
 ];

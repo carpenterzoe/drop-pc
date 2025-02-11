@@ -4,9 +4,9 @@ import { DEFAULT_PAGE_SIZE } from '@/utils/constants';
 import { Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useRef, useState } from 'react';
-import { COLUMNS } from './constants';
+import { getColumns } from './constants';
 import EditCourse from './components/EditCourse';
-// import { getColumns } from './constants';
+
 // import OrderTime from './components/OrderTime';
 
 /**
@@ -49,7 +49,9 @@ const Course = () => {
         rowKey="id"
         actionRef={actionRef}
         // COLUMNS 配置指定了类型是数组，所以  request={refetch} 返回的类型 也是数组。否则编译报错。
-        columns={COLUMNS}
+        columns={getColumns({
+          onEditHandler: onClickAddHandler,
+        })}
         pagination={{
           pageSize: DEFAULT_PAGE_SIZE,
         }}
