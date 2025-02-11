@@ -1,7 +1,11 @@
 import { COMMIT_COURSE, GET_COURSE, GET_COURSES } from '@/graphql/course';
 import { DEFAULT_PAGE_SIZE } from '@/utils/constants';
-import { useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { message } from 'antd';
+
+/**
+ * ? 1. 如果 useQuery 加上了skip: true之后，refetch 和 data 不能同时用，为什么前面列表请求的时候这样写了？
+ */
 
 // 列表 list
 export const useCourses = (
@@ -76,4 +80,32 @@ export const useEditCourseInfo = (): [handleEdit: Function, loading: boolean] =>
   };
 
   return [handleEdit, loading];
+};
+
+// 查询课程详情
+export const useCourse = (): { getCourse: Function, loading: boolean, data: ICourse } => {
+  /**
+   * ? 外面已经调 getCourse 拿到返回值，直接设置了form.setFieldsValue(res.data);
+   * ? useLazyQuery 这里返回的 data 还有什么用？
+   */
+  const [get, { data, loading }] = useLazyQuery(GET_COURSE);
+
+  const getCourse = async (
+    id: string,
+  ) => {
+    const res = await get({
+      variables: {
+        id,
+      },
+    });
+    return {
+      data: res.data.getCourseInfo.data, // 这里是外部调 getCourse 拿到的data，字段简化
+    };
+  };
+
+  return {
+    getCourse,
+    loading,
+    data,
+  };
 };

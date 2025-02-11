@@ -16,8 +16,9 @@ interface IProps {
 }
 
 /**
-* 创建/编辑课程
-*/
+ * ! 1. EditCourse useEffect 的优化，把数据处理都包在service中，让组件的逻辑保持简单
+ * 2. useEffect 第一个参数，不能直接包async，会报错
+ */
 const EditCourse = ({
   open,
   onClose,
@@ -26,6 +27,7 @@ const EditCourse = ({
   // 类似于ref, 获取表单实例
   const [form] = Form.useForm();
   const [edit, editLoading] = useEditCourseInfo();
+  const { getCourse, loading } = useCourse();
 
   const onSubmitHandler = async () => {
     const values = await form.validateFields();
@@ -34,6 +36,19 @@ const EditCourse = ({
       edit(id, values, onClose);
     }
   };
+
+  useEffect(() => {
+    const init = async () => {
+      if (id) {
+        // ? 如果这里直接取到了，那 useCourse 原本的 data不是没用了吗
+        const res = await getCourse(id);
+        form.setFieldsValue(res.data);
+      } else {
+        form.resetFields();
+      }
+    };
+    init();
+  }, [id]);
 
   return (
     <Drawer
@@ -50,8 +65,7 @@ const EditCourse = ({
         </Space>
       )}
     >
-      {/* spinning={loading} */}
-      <Spin>
+      <Spin spinning={loading}>
         <Form
           form={form}
         >
