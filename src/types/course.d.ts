@@ -11,3 +11,5 @@ interface ICourse {
   otherInfo?: string;
   reducibleTime: IWeekCourse[];
 }
+
+type TCourseQuery = { [key: string]: { __typename?: 'Query', data: ICourse, page: IPage } };
