@@ -27,7 +27,7 @@ export const wrapProvider = connectFactory(KEY, DEFAULT_VALUE);
 // 0. 基础api，基础api，存取数据都要先调用
 // equal to useContext. use it to get store or setStore method.
 // 这里再套一层function，是为了其他组件方便调用，把user相关的内容都封装到当前hook
-export const useUserContext = () => useAppContext(KEY);
+export const useUserContext = () => useAppContext<IUser>(KEY);
 
 // 2. 存数据
 // req data and set to store
