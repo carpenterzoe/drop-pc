@@ -1,7 +1,9 @@
-import { GET_COURSES } from '@/graphql/course';
+import { COMMIT_COURSE, GET_COURSE, GET_COURSES } from '@/graphql/course';
 import { DEFAULT_PAGE_SIZE } from '@/utils/constants';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
+import { message } from 'antd';
 
+// 列表 list
 export const useCourses = (
   pageNum = 1,
   pageSize = DEFAULT_PAGE_SIZE,
@@ -48,4 +50,30 @@ export const useCourses = (
     refetch: refetchHandler,
     data: data?.getCourses.data,
   };
+};
+
+// 编辑
+export const useEditCourseInfo = (): [handleEdit: Function, loading: boolean] => {
+  const [edit, { loading }] = useMutation(COMMIT_COURSE);
+
+  const handleEdit = async (
+    id: number,
+    params: TBaseCourse,
+    callback: (isReload: boolean) => void,
+  ) => {
+    const res = await edit({
+      variables: {
+        id,
+        params,
+      },
+    });
+    if (res.data.commitCourseInfo.code === 200) {
+      message.success(res.data.commitCourseInfo.message);
+      callback(true);
+      return;
+    }
+    message.error(res.data.commitCourseInfo.message);
+  };
+
+  return [handleEdit, loading];
 };

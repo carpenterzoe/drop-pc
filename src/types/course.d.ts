@@ -12,4 +12,7 @@ interface ICourse {
   reducibleTime: IWeekCourse[];
 }
 
-type TCourseQuery = { [key: string]: { __typename?: 'Query', data: ICourse, page: IPage } };
+// data: ICourse[] 是数组，跟 COLUMNS 配置的数据类型要对应上
+type TCourseQuery = { [key: string]: { __typename?: 'Query', data: ICourse[], page: IPage } };
+
+type TBaseCourse = Partial<ICourse>;
