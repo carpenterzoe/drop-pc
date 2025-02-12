@@ -45,6 +45,14 @@ export const GET_COURSE = gql`
         reserveInfo
         refundInfo
         otherInfo
+        reducibleTime {
+          week
+          orderTime {
+            startTime
+            endTime
+            key
+          }
+        }
       }
     }
   }

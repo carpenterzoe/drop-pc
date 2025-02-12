@@ -1,3 +1,6 @@
+/**
+ * 课程基本信息相关
+ */
 interface ICourse {
   id: string;
   name: string; // 标题
@@ -17,6 +20,9 @@ type TCourseQuery = { [key: string]: { __typename?: 'Query', data: ICourse[], pa
 
 type TBaseCourse = Partial<ICourse>;
 
+/**
+ * 预约时间相关
+ */
 interface IOrderTime {
   startTime: string;
   endTime: string;
@@ -24,3 +30,9 @@ interface IOrderTime {
 }
 
 type TWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+
+// EditableProTable 每周几配置的可选时间
+interface IWeekCourse {
+  week: TWeek;
+  orderTime: IOrderTime[];
+}
