@@ -9,6 +9,7 @@ import { RedoOutlined, ChromeOutlined } from '@ant-design/icons';
 import {
   useCourse,
 } from '@/services/course';
+import { omit } from 'lodash';
 import { DAYS, getColumns, IDay } from './constants';
 
 import style from './index.module.less';
@@ -37,7 +38,8 @@ const OrderTime = ({
   // useMemo返回的值也是响应式的
   // ? 为什么这里用useMemo，如果不用这个，还有什么可以实现
   const orderTime = useMemo(
-    () => reducibleTime.find((item) => item.week === currentDay.key)?.orderTime,
+    // as IOrderTime[] 显式指定这里肯定有值，否则后面数组操作的时候类型提示可能是undefined，无法数组展开
+    () => reducibleTime.find((item) => item.week === currentDay.key)?.orderTime as IOrderTime[],
     [reducibleTime, currentDay],
   );
 
@@ -46,7 +48,7 @@ const OrderTime = ({
       if (id) {
         const res = await getCourse(id);
         // ? 这个存的值到哪去了？ - useMemo监听到变化，计算得到 orderTime，渲染到列表里
-        setReducibleTime(res.reducibleTime);
+        setReducibleTime(res.reducibleTime || []);
       } else {
         console.log('clear');
       }
@@ -101,6 +103,24 @@ const OrderTime = ({
           }),
         }}
         value={orderTime}
+        editable={{
+          onSave: async (rowKey, data) => {
+            const newData = omit(data, 'index'); // 删掉对象中的指定字段
+
+            let newOrderTime = [];
+            // 在table中找到编辑的这一行
+            const curIdx = orderTime?.findIndex((item) => item.key === rowKey);
+            // 修改某一行
+            if (curIdx > -1) {
+              newOrderTime = orderTime?.map((item) => (item.key === rowKey ? newData : item));
+            } else {
+              // 新增行
+              newOrderTime = [...orderTime, newData];
+            }
+
+            console.log('newOrderTime', newOrderTime);
+          },
+        }}
       />
 
       <Row gutter={20} className={style.buttons}>
