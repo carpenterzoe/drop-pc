@@ -40,9 +40,8 @@ const EditCourse = ({
   useEffect(() => {
     const init = async () => {
       if (id) {
-        // ? 如果这里直接取到了，那 useCourse 原本的 data不是没用了吗
-        const res = await getCourse(id);
-        form.setFieldsValue(res.data);
+        const data = await getCourse(id);
+        form.setFieldsValue(data);
       } else {
         form.resetFields();
       }
@@ -55,6 +54,8 @@ const EditCourse = ({
       title={id ? '编辑课程' : '新建课程'}
       width={720}
       open={open}
+      // 强制render，避免初始化时 Form 相关的方法执行不到报错
+      forceRender
       onClose={() => onClose()}
       extra={(
         <Space>
