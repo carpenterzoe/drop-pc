@@ -16,3 +16,11 @@ interface ICourse {
 type TCourseQuery = { [key: string]: { __typename?: 'Query', data: ICourse[], page: IPage } };
 
 type TBaseCourse = Partial<ICourse>;
+
+interface IOrderTime {
+  startTime: string;
+  endTime: string;
+  key: number;
+}
+
+type TWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
