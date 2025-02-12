@@ -1,12 +1,15 @@
 import { ProColumns } from '@ant-design/pro-components';
 import { Button } from 'antd';
 
+interface IProps {
+  onEditHandler: (id: string) => void
+  onOrderTimeHandler: (id: string) => void
+}
 // ! 这里改成function，是为了让组件调用的时候传入操作方法作为参数，给操作列指定function
 export const getColumns = ({
   onEditHandler,
-}: {
-  onEditHandler: Function,
-}): ProColumns<ICourse, 'text'>[] => [
+  onOrderTimeHandler,
+}: IProps): ProColumns<ICourse, 'text'>[] => [
   {
     title: '课程标题',
     dataIndex: 'name',
@@ -39,13 +42,13 @@ export const getColumns = ({
       >
         编辑
       </Button>,
-      // <Button
-      //   key="orderTime"
-      //   type="link"
-      //   onClick={() => onOrderTimeHandler(entity.id)}
-      // >
-      //   可约时间
-      // </Button>
+      <Button
+        key="orderTime"
+        type="link"
+        onClick={() => onOrderTimeHandler(entity.id)}
+      >
+        可约时间
+      </Button>,
     ],
   },
 ];

@@ -6,8 +6,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { useRef, useState } from 'react';
 import { getColumns } from './constants';
 import EditCourse from './components/EditCourse';
-
-// import OrderTime from './components/OrderTime';
+import OrderTime from './components/OrderTime';
 
 /**
 * 当前门店下开设的课程
@@ -20,7 +19,7 @@ const Course = () => {
   const { refetch, data } = useCourses();
 
   const [showInfo, setShowInfo] = useState(false);
-  // const [showOrderTime, setShowOrderTime] = useState(false);
+  const [showOrderTime, setShowOrderTime] = useState(false);
 
   const onClickAddHandler = (id?: string) => {
     if (id) {
@@ -39,10 +38,10 @@ const Course = () => {
     }
   };
 
-  // const onOrderTimeHandler = (id: string) => {
-  //   setCurId(id);
-  //   setShowOrderTime(true);
-  // };
+  const onOrderTimeHandler = (id: string) => {
+    setCurId(id);
+    setShowOrderTime(true);
+  };
   return (
     <PageContainer header={{ title: '当前门店下开设的课程' }}>
       <ProTable
@@ -51,6 +50,7 @@ const Course = () => {
         // COLUMNS 配置指定了类型是数组，所以  request={refetch} 返回的类型 也是数组。否则编译报错。
         columns={getColumns({
           onEditHandler: onClickAddHandler,
+          onOrderTimeHandler,
         })}
         pagination={{
           pageSize: DEFAULT_PAGE_SIZE,
@@ -69,7 +69,10 @@ const Course = () => {
         dataSource={data}
       />
       {showInfo && <EditCourse open={showInfo} id={curId} onClose={closeAndRefetchHandler} />}
-      {/* {showOrderTime && <OrderTime id={curId} onClose={() => setShowOrderTime(false)} />} */}
+      {
+        showOrderTime
+        && <OrderTime open={showOrderTime} id={curId} onClose={() => setShowOrderTime(false)} />
+      }
     </PageContainer>
   );
 };
