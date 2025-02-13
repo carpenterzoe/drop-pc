@@ -1,5 +1,6 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import { currentOrg } from '@/utils';
 import { AUTH_TOKEN } from './constants';
 
 const httpLink = createHttpLink({
@@ -12,6 +13,7 @@ const authLink = setContext((_, { headers }) => {
     headers: {
       ...headers,
       Authorization: token ? `Bearer ${token}` : '',
+      orgId: currentOrg()?.value,
     },
   };
 });

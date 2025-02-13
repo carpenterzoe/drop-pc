@@ -64,8 +64,11 @@ const Layout = () => {
       ]}
       menuItemRender={menuItemRender}
     >
-      {/* outlet 相当于router的插槽 */}
-      {outlet}
+      {/* key变化会导致子组件重新渲染，也就是数据会重新初始化 */}
+      <div key={store.currentOrg}>
+        {/* outlet 相当于router的插槽 */}
+        {outlet}
+      </div>
     </ProLayout>
   );
 };

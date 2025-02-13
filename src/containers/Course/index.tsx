@@ -68,6 +68,10 @@ const Course = () => {
         request={refetch}
         dataSource={data}
       />
+      {/*
+        onClose={closeAndRefetchHandler} 要透传，而不是 () => closeAndRefetchHandler()，
+        否则拿不到内部调这个func传过来的值
+      */}
       {showInfo && <EditCourse id={curId} onClose={closeAndRefetchHandler} />}
       {showOrderTime && <OrderTime id={curId} onClose={() => setShowOrderTime(false)} />}
     </PageContainer>

@@ -5,6 +5,7 @@ interface IUser {
   desc?: string;
   avatar?: string;
   refetchHandler?: function;
+  currentOrg?: string;
 }
 
 interface IMedia {
