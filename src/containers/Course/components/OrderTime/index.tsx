@@ -8,6 +8,7 @@ import { EditableProTable } from '@ant-design/pro-components';
 import { RedoOutlined, ChromeOutlined } from '@ant-design/icons';
 import {
   useCourse,
+  useEditCourseInfo,
 } from '@/services/course';
 import { omit } from 'lodash';
 import { DAYS, getColumns, IDay } from './constants';
@@ -28,6 +29,7 @@ const OrderTime = ({
   const [currentDay, setCurrentDay] = useState<IDay>(DAYS[0]);
   const [reducibleTime, setReducibleTime] = useState<IWeekCourse[]>([]);
   const { getCourse, loading } = useCourse();
+  const [edit, editLoading] = useEditCourseInfo();
 
   /**
    * 这里的逻辑其实是比较清晰的。预约时间的计算时机：
@@ -43,18 +45,42 @@ const OrderTime = ({
     [reducibleTime, currentDay],
   );
 
+  // 初始化 拿到一整周的可约时间
+  const init = async () => {
+    if (id) {
+      const res = await getCourse(id);
+      // ? 这个存的值到哪去了？ - useMemo监听到变化，计算得到 orderTime，渲染到列表里
+      setReducibleTime(res.reducibleTime || []);
+    } else {
+      console.log('clear');
+    }
+  };
+
   useEffect(() => {
-    const init = async () => {
-      if (id) {
-        const res = await getCourse(id);
-        // ? 这个存的值到哪去了？ - useMemo监听到变化，计算得到 orderTime，渲染到列表里
-        setReducibleTime(res.reducibleTime || []);
-      } else {
-        console.log('clear');
-      }
-    };
     init();
   }, [id]);
+
+  const onSaveHandler = (ot: IOrderTime[]) => {
+    const rt = [...reducibleTime];
+
+    // orderTime 这里拿到的是一周当中某一天的数据
+    const index = reducibleTime.findIndex((item) => item.week === currentDay.key);
+
+    const todayOrderTime = {
+      week: currentDay.key,
+      orderTime: ot,
+    };
+    if (index > -1) {
+      rt[index] = todayOrderTime;
+    } else {
+      rt.push(todayOrderTime);
+    }
+
+    // 编辑成功，传一个回调 数据刷新
+    edit(id, {
+      reducibleTime: rt,
+    }, () => init());
+  };
 
   const onTabChangeHandler = (key: string) => {
     const current = DAYS.find((item) => item.key === key) as IDay; // as IDay，因为这里肯定有值
@@ -83,7 +109,7 @@ const OrderTime = ({
       <Tabs type="card" items={DAYS} onChange={onTabChangeHandler} />
       {/* <IOrderTime> 指定 value 的类型 */}
       <EditableProTable<IOrderTime>
-        loading={loading}
+        loading={loading || editLoading}
         columns={getColumns(onDeleteHandler)}
         headerTitle={(
           <Space>
@@ -118,7 +144,7 @@ const OrderTime = ({
               newOrderTime = [...orderTime, newData];
             }
 
-            console.log('newOrderTime', newOrderTime);
+            onSaveHandler(newOrderTime);
           },
         }}
       />
