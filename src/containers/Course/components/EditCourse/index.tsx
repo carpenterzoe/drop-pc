@@ -12,7 +12,6 @@ const { TextArea } = Input;
 interface IProps {
   id?: string;
   onClose: (isReload?: boolean) => void;
-  open: boolean;
 }
 
 /**
@@ -20,7 +19,6 @@ interface IProps {
  * 2. useEffect 第一个参数，不能直接包async，会报错
  */
 const EditCourse = ({
-  open,
   onClose,
   id,
 }: IProps) => {
@@ -53,9 +51,7 @@ const EditCourse = ({
     <Drawer
       title={id ? '编辑课程' : '新建课程'}
       width={720}
-      open={open}
-      // 强制render，避免初始化时 Form 相关的方法执行不到报错
-      forceRender
+      open
       onClose={() => onClose()}
       extra={(
         <Space>

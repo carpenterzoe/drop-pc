@@ -18,11 +18,9 @@ import { useOrderTime } from './hooks';
 interface IProps {
   id: string;
   onClose: (isReload?: boolean) => void;
-  open: boolean;
 }
 
 const OrderTime = ({
-  open,
   onClose,
   id,
 }: IProps) => {
@@ -46,8 +44,7 @@ const OrderTime = ({
     <Drawer
       title="编辑预约时间"
       width={720}
-      open={open}
-      forceRender
+      open
       onClose={() => onClose()}
       extra={(
         <Space>
