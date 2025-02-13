@@ -1,4 +1,6 @@
-import { getRouteByKey, routes } from '@/routes/menus';
+import {
+  getRouteByKey, ROUTE_CONFIG, ROUTE_KEY, routes,
+} from '@/routes/menus';
 import { useEffect, useMemo } from 'react';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 
@@ -51,7 +53,7 @@ export const useGoTo = () => {
 };
 
 // 通过页面的url 匹配查找，返回我们自己定义的路由配置信息
-export const useMatchRoute = () => {
+export const useMatchedRoute = () => {
   // 拿到当前路由，react 提供
   const r = useLocation();
 
@@ -62,9 +64,14 @@ export const useMatchRoute = () => {
    * ? 所以这里引发一个疑问，useMemo 究竟适合于什么样的场景能做到优化？
    * ? 怎么才能判断确实有优化， 这个钩子有没有常见的滥用 引发的副作用
    */
-  const route = useMemo(() => {
-    routes.find((item) => matchPath(item.path, r.pathname));
-  }, [r.pathname]);
-
+  const route = useMemo(() => routes.find((item) => matchPath(`/${item.path}`, r.pathname)), [r.pathname]);
   return route;
+};
+
+export const useIsOrgRoute = () => {
+  const curRoute = useMatchedRoute();
+  if (curRoute?.path === ROUTE_CONFIG[ROUTE_KEY.ORG].path) {
+    return true;
+  }
+  return false;
 };

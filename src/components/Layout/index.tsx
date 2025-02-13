@@ -1,4 +1,4 @@
-import { useGoTo } from '@/hooks';
+import { useGoTo, useIsOrgRoute } from '@/hooks';
 import { useUserContext } from '@/hooks/userHooks';
 import { ROUTE_KEY, routes } from '@/routes/menus';
 import { AUTH_TOKEN } from '@/utils/constants';
@@ -18,7 +18,7 @@ const menuItemRender = (item: MenuDataItem, dom: React.ReactNode) => {
 const Layout = () => {
   const outlet = useOutlet();
   const { store } = useUserContext();
-  // const isOrg = useIsOrgRoute();
+  const isOrg = useIsOrgRoute();
   const { go } = useGoTo();
   const nav = useNavigate();
 
@@ -57,7 +57,7 @@ const Layout = () => {
         routes,
       }}
       actionsRender={() => [
-        <OrgSelect />,
+        !isOrg && <OrgSelect />,
         <Tooltip title="门店管理">
           <ShopOutlined onClick={goToOrg} />
         </Tooltip>,
