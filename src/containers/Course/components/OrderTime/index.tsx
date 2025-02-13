@@ -2,6 +2,7 @@ import {
   Drawer, Space, Button, Tabs,
   Col,
   Row,
+  message,
 } from 'antd';
 import { useMemo, useState } from 'react';
 import { EditableProTable } from '@ant-design/pro-components';
@@ -11,7 +12,10 @@ import {
   useEditCourseInfo,
 } from '@/services/course';
 import { omit } from 'lodash';
-import { DAYS, getColumns, IDay } from './constants';
+import {
+  DAYS, getColumns, IDay, isWorkDay,
+  workDays,
+} from './constants';
 
 import style from './index.module.less';
 
@@ -43,7 +47,7 @@ const OrderTime = ({
   const orderTime = useMemo(
     // as IOrderTime[] 显式指定这里肯定有值，否则后面数组操作的时候类型提示可能是undefined，无法数组展开
     () => data?.reducibleTime.find((item) => item.week
-    === currentDay.key)?.orderTime as IOrderTime[],
+    === currentDay.key)?.orderTime as IOrderTime[] || [],
     [data, currentDay],
   );
 
@@ -69,13 +73,42 @@ const OrderTime = ({
     }, () => refetch());
   };
 
+  const onDeleteHandler = (key: number) => {
+    const newOt = orderTime.filter((item) => item.key !== key);
+    onSaveHandler(newOt);
+  };
+
   const onTabChangeHandler = (key: string) => {
     const current = DAYS.find((item) => item.key === key) as IDay; // as IDay，因为这里肯定有值
     setCurrentDay(current);
   };
-  const onDeleteHandler = () => {};
-  const allWorkDaySyncHandler = () => {};
-  const allWeekSyncHandler = () => {};
+  const allWorkDaySyncHandler = () => {
+    if (!isWorkDay(currentDay.key)) {
+      message.error('当前非工作日');
+      return;
+    }
+    // 工作日 统一生成
+    const workDayRt: IWeekCourse[] = workDays.map((week) => ({
+      week,
+      orderTime: [...orderTime],
+    }));
+    // 周末 保留原来的
+    const weekendRt = (data?.reducibleTime || []).filter((item) => !isWorkDay(item.week));
+    const rt: IWeekCourse[] = [...workDayRt, ...weekendRt];
+    edit(id, {
+      reducibleTime: rt,
+    }, () => refetch());
+  };
+
+  const allWeekSyncHandler = () => {
+    const rt: IWeekCourse[] = DAYS.map((item) => ({
+      week: item.key,
+      orderTime,
+    }));
+    edit(id, {
+      reducibleTime: rt,
+    }, () => refetch());
+  };
 
   return (
     <Drawer
@@ -109,7 +142,7 @@ const OrderTime = ({
         )}
         rowKey="key"
         recordCreatorProps={{
-          record: (index) => ({
+          record: (index: number) => ({
             key: index + 1,
             startTime: '12:00:00',
             endTime: '12:30:00',
@@ -142,7 +175,7 @@ const OrderTime = ({
             icon={<RedoOutlined />}
             style={{ width: '100%' }}
             type="primary"
-            // disabled={!isWorkDay(currentDay.key)}
+            disabled={!isWorkDay(currentDay.key)}
             onClick={allWorkDaySyncHandler}
           >
             全工作日同步

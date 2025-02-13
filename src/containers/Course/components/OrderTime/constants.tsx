@@ -95,3 +95,6 @@ export const getColumns = (onDeleteHandler: Function): ProColumns[] => [
     ),
   },
 ];
+
+export const workDays: TWeek[] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+export const isWorkDay = (day: TWeek) => workDays.includes(day);
