@@ -13,7 +13,7 @@ export const useCourses = (
   pageNum = 1,
   pageSize = DEFAULT_PAGE_SIZE,
 ) => {
-  const { refetch, data } = useQuery<TCourseQuery>(GET_COURSES, {
+  const { refetch, data } = useQuery<TCoursesQuery>(GET_COURSES, {
     // 避免 useQuery 内部封装的初始化请求，在一进页面就执行
     // 让 antd protable 的 request 执行即可，避免重复请求
     skip: true,
@@ -85,6 +85,7 @@ export const useEditCourseInfo = (): [handleEdit: Function, loading: boolean] =>
 
 // 查询课程详情
 export const useCourse = (): { getCourse: Function, loading: boolean, data: ICourse } => {
+  // useLazyQuery 如果入参不发生变化，调get触发，也不会重新请求
   const [get, { data, loading }] = useLazyQuery(GET_COURSE);
 
   const getCourse = async (
@@ -102,5 +103,18 @@ export const useCourse = (): { getCourse: Function, loading: boolean, data: ICou
     getCourse,
     loading,
     data,
+  };
+};
+
+export const useCourseInfo = (id: string) => {
+  const { data, loading, refetch } = useQuery<TCourseQuery>(GET_COURSE, {
+    variables: {
+      id,
+    },
+  });
+  return {
+    data: data?.getCourseInfo.data,
+    loading,
+    refetch,
   };
 };

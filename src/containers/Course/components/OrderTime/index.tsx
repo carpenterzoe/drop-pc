@@ -3,11 +3,11 @@ import {
   Col,
   Row,
 } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { EditableProTable } from '@ant-design/pro-components';
 import { RedoOutlined, ChromeOutlined } from '@ant-design/icons';
 import {
-  useCourse,
+  useCourseInfo,
   useEditCourseInfo,
 } from '@/services/course';
 import { omit } from 'lodash';
@@ -16,7 +16,7 @@ import { DAYS, getColumns, IDay } from './constants';
 import style from './index.module.less';
 
 interface IProps {
-  id?: string;
+  id: string;
   onClose: (isReload?: boolean) => void;
   open: boolean;
 }
@@ -27,8 +27,9 @@ const OrderTime = ({
   id,
 }: IProps) => {
   const [currentDay, setCurrentDay] = useState<IDay>(DAYS[0]);
-  const [reducibleTime, setReducibleTime] = useState<IWeekCourse[]>([]);
-  const { getCourse, loading } = useCourse();
+
+  // 初始化数据重新放回useQuery处理，因为useLazyQuery在无法重新手动触发请求
+  const { data, refetch, loading } = useCourseInfo(id);
   const [edit, editLoading] = useEditCourseInfo();
 
   /**
@@ -41,30 +42,16 @@ const OrderTime = ({
   // ? 为什么这里用useMemo，如果不用这个，还有什么可以实现
   const orderTime = useMemo(
     // as IOrderTime[] 显式指定这里肯定有值，否则后面数组操作的时候类型提示可能是undefined，无法数组展开
-    () => reducibleTime.find((item) => item.week === currentDay.key)?.orderTime as IOrderTime[],
-    [reducibleTime, currentDay],
+    () => data?.reducibleTime.find((item) => item.week
+    === currentDay.key)?.orderTime as IOrderTime[],
+    [data, currentDay],
   );
 
-  // 初始化 拿到一整周的可约时间
-  const init = async () => {
-    if (id) {
-      const res = await getCourse(id);
-      // ? 这个存的值到哪去了？ - useMemo监听到变化，计算得到 orderTime，渲染到列表里
-      setReducibleTime(res.reducibleTime || []);
-    } else {
-      console.log('clear');
-    }
-  };
-
-  useEffect(() => {
-    init();
-  }, [id]);
-
   const onSaveHandler = (ot: IOrderTime[]) => {
-    const rt = [...reducibleTime];
+    const rt = [...(data?.reducibleTime || [])];
 
     // orderTime 这里拿到的是一周当中某一天的数据
-    const index = reducibleTime.findIndex((item) => item.week === currentDay.key);
+    const index = rt.findIndex((item) => item.week === currentDay.key);
 
     const todayOrderTime = {
       week: currentDay.key,
@@ -79,7 +66,7 @@ const OrderTime = ({
     // 编辑成功，传一个回调 数据刷新
     edit(id, {
       reducibleTime: rt,
-    }, () => init());
+    }, () => refetch());
   };
 
   const onTabChangeHandler = (key: string) => {
@@ -130,8 +117,8 @@ const OrderTime = ({
         }}
         value={orderTime}
         editable={{
-          onSave: async (rowKey, data) => {
-            const newData = omit(data, 'index'); // 删掉对象中的指定字段
+          onSave: async (rowKey, rowData) => {
+            const newData = omit(rowData, 'index'); // 删掉对象中的指定字段
 
             let newOrderTime = [];
             // 在table中找到编辑的这一行
@@ -175,11 +162,6 @@ const OrderTime = ({
       </Row>
     </Drawer>
   );
-};
-
-// 可选属性，必须指定默认值
-OrderTime.defaultProps = {
-  id: '',
 };
 
 export default OrderTime;

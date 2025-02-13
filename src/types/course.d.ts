@@ -12,11 +12,13 @@ interface ICourse {
   reserveInfo?: string;
   refundInfo?: string;
   otherInfo?: string;
-  // reducibleTime: IWeekCourse[];
+  reducibleTime: IWeekCourse[];
 }
 
+type TCourseQuery = { [key: string]: { __typename?: 'Query', data: ICourse } };
+
 // data: ICourse[] 是数组，跟 COLUMNS 配置的数据类型要对应上
-type TCourseQuery = { [key: string]: { __typename?: 'Query', data: ICourse[], page: IPage } };
+type TCoursesQuery = { [key: string]: { __typename?: 'Query', data: ICourse[], page: IPage } };
 
 type TBaseCourse = Partial<ICourse>;
 
