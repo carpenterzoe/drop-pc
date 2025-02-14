@@ -56,3 +56,27 @@ type TBaseCard = Partial<ICard>;
 type TCardsQuery = { [key: string]: { __typename?: 'Query', data: ICard[], page: IPage } };
 
 type TCardQuery = { [key: string]: { __typename?: 'Query', data: ICard } };
+
+/**
+ * 商品相关
+ */
+
+interface IProduct {
+  id: string;
+  limitBuyNumber: number;
+  name: string;
+  coverUrl?: string;
+  bannerUrl?: string;
+  desc: string;
+  originalPrice: number;
+  stock: number;
+  status: string;
+  preferentialPrice: number;
+  cards: ICard[];
+}
+
+type TBaseProduct = Partial<IProduct>;
+
+type TProductsQuery = { [key: string]: { __typename?: 'Query', data: IProduct[], page: IPage } };
+
+type TProductQuery = { [key: string]: { __typename?: 'Query', data: IProduct } };
