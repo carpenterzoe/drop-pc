@@ -7,6 +7,7 @@ import { useRef, useState } from 'react';
 import { getColumns } from './constants';
 import EditCourse from './components/EditCourse';
 import OrderTime from './components/OrderTime';
+import ConsumeCard from './components/ConsumeCard';
 
 /**
 * 当前门店下开设的课程
@@ -14,6 +15,7 @@ import OrderTime from './components/OrderTime';
 const Course = () => {
   const actionRef = useRef<ActionType>();
   const [curId, setCurId] = useState('');
+  const [showCard, setShowCard] = useState(false);
 
   // 这里 useCourses 拿到的数据，是怎么到当前组件里来 并且render的？
   const { refetch, data } = useCourses();
@@ -42,6 +44,11 @@ const Course = () => {
     setCurId(id);
     setShowOrderTime(true);
   };
+
+  const onCardHandler = (id: string) => {
+    setCurId(id);
+    setShowCard(true);
+  };
   return (
     <PageContainer header={{ title: '当前门店下开设的课程' }}>
       <ProTable
@@ -51,6 +58,7 @@ const Course = () => {
         columns={getColumns({
           onEditHandler: onClickAddHandler,
           onOrderTimeHandler,
+          onCardHandler,
         })}
         pagination={{
           pageSize: DEFAULT_PAGE_SIZE,
@@ -74,6 +82,7 @@ const Course = () => {
       */}
       {showInfo && <EditCourse id={curId} onClose={closeAndRefetchHandler} />}
       {showOrderTime && <OrderTime id={curId} onClose={() => setShowOrderTime(false)} />}
+      {showCard && <ConsumeCard id={curId} onClose={() => setShowCard(false)} />}
     </PageContainer>
   );
 };

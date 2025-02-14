@@ -38,3 +38,21 @@ interface IWeekCourse {
   week: TWeek;
   orderTime: IOrderTime[];
 }
+
+/**
+ * 消费卡相关
+ */
+interface ICard {
+  id: string;
+  name: string;
+  type: string;
+  time: number;
+  validityDay: number;
+  course?: ICourse;
+}
+
+type TBaseCard = Partial<ICard>;
+
+type TCardsQuery = { [key: string]: { __typename?: 'Query', data: ICard[], page: IPage } };
+
+type TCardQuery = { [key: string]: { __typename?: 'Query', data: ICard } };
