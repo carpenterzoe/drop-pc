@@ -1,5 +1,6 @@
 import { Drawer } from 'antd';
 import { EditableProTable } from '@ant-design/pro-components';
+import { useCards, useDeleteCard, useEditCardInfo } from '@/services/card';
 import { getColumns } from './constants';
 
 interface IProps {
@@ -7,17 +8,30 @@ interface IProps {
   onClose: (isReload?: boolean) => void;
 }
 
-const OrderTime = ({
+const ConsumeCard = ({
   onClose,
   id,
 }: IProps) => {
+  const { data, loading, refetch } = useCards(id); // 这里传的id是 courseId
+  const [edit, editLoading] = useEditCardInfo();
+  const [delelete, deleteLoading] = useDeleteCard();
   const onDeleteHandler = (rowId: string) => {
-    console.log('这个id是组件行内抛出来的 rowId', rowId);
+    delelete(rowId, refetch);
   };
-  console.log('id', id);
 
-  const onSaveHandler = (rowData: any) => {
-    console.log('rowData: ', rowData);
+  const onSaveHandler = (rowData: ICard) => {
+    const {
+      name, type, time, validityDay,
+    } = rowData;
+
+    edit(
+      rowData.id === 'new' ? '' : rowData.id,
+      id,
+      {
+        name, type, time, validityDay,
+      },
+      refetch,
+    );
   };
 
   return (
@@ -28,6 +42,8 @@ const OrderTime = ({
       onClose={() => onClose()}
     >
       <EditableProTable<ICard>
+        value={data}
+        loading={loading || editLoading || deleteLoading}
         headerTitle="请管理该课程的消费卡"
         rowKey="id"
         columns={getColumns(onDeleteHandler)}
@@ -43,7 +59,6 @@ const OrderTime = ({
         }}
         editable={{
           onSave: async (rowKey, rowData) => {
-            console.log('rowKey: ', rowKey);
             onSaveHandler(rowData);
           },
           onDelete: async (rowKey) => {
@@ -56,4 +71,4 @@ const OrderTime = ({
   );
 };
 
-export default OrderTime;
+export default ConsumeCard;

@@ -95,6 +95,9 @@ const OrderTime = ({
 
             onSaveHandler(newOrderTime);
           },
+          onDelete: async (rowKey) => {
+            onDeleteHandler(rowKey as number);
+          },
         }}
       />
 
