@@ -5,7 +5,7 @@ import {
 } from '@/graphql/product';
 import { DEFAULT_PAGE_SIZE } from '@/utils/constants';
 import { useMutation, useQuery } from '@apollo/client';
-import { App } from 'antd';
+import { message } from 'antd';
 import { useMemo } from 'react';
 
 export const useProducts = (
@@ -58,7 +58,6 @@ export const useProducts = (
 // 编辑商品信息
 export const useEditProductInfo = (): [handleEdit: any, loading: boolean] => {
   const [edit, { loading }] = useMutation(COMMIT_PRODUCT);
-  const { message } = App.useApp();
   const handleEdit = async (id: string, params: TBaseProduct, callback: ()=> void) => {
     const res = await edit({
       variables: {

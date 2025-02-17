@@ -6,7 +6,7 @@ import {
 } from 'antd';
 import UploadImage from '@/components/OSSImageUpload';
 import { useEditProductInfo, useProductInfo } from '@/services/product';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 // import TypeSelect from '@/components/TypeSelect';
 
 const { TextArea } = Input;
@@ -21,6 +21,7 @@ const EditProduct = ({
   const [form] = Form.useForm();
   const [edit, editLoading] = useEditProductInfo();
   const { loading, refetch } = useProductInfo(id || '');
+  const [open, setOpen] = useState(true);
 
   useEffect(() => {
     const init = async () => {
@@ -46,15 +47,28 @@ const EditProduct = ({
     }
   };
 
+  /**
+   * onClose 是父组件传入的。
+   * const closeAndRefetchHandler = (isReload?: boolean) => {
+   *   setShowInfo(false)
+   * }
+   * setShowInfo 销毁了当前弹窗，所以直接执行的话，视觉上会呈现出组件忽然不见了，没有动画效果。
+
+    * 改为切换open属性控制弹窗显示隐藏，再 调afterOpenChange 去执行 父组件传入的 onCose
+    * 这样即可在组件的淡出动画执行完毕后再执行上层传入的销毁、刷新等动作。
+   */
+
   return (
     <Drawer
       title={id ? '编辑商品' : '新建商品'}
       width={900}
-      open
-      onClose={() => onClose()}
+      open={open}
+      onClose={() => setOpen(false)}
+      // 右侧隐藏动画之后，再 onClose 销毁当前组件
+      afterOpenChange={(isOpen) => !isOpen && onClose()}
       extra={(
         <Space>
-          <Button onClick={() => onClose()}>取消</Button>
+          <Button onClick={() => setOpen(false)}>取消</Button>
           <Button loading={editLoading} onClick={onSubmitHandler} type="primary">
             提交
           </Button>
@@ -76,15 +90,15 @@ const EditProduct = ({
                 <Input />
               </Form.Item>
             </Col>
-            <Col span={6}>
+            {/* <Col span={6}>
               <Form.Item
                 label="商品分类"
                 name="type"
                 rules={[{ required: true }]}
               >
-                {/* <TypeSelect /> */}
+                <TypeSelect />
               </Form.Item>
-            </Col>
+            </Col> */}
           </Row>
           <Row gutter={20}>
             <Col span={6}>
