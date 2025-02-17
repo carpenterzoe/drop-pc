@@ -1,8 +1,14 @@
-import { Modal, Row } from 'antd';
+import {
+  Modal, Result, Row, Space, Typography,
+} from 'antd';
 import { useProductInfo } from '@/services/product';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { CheckCard } from '@ant-design/pro-components';
 import CourseSearch from '@/components/CourseSearch';
+import { useLazyCards } from '@/services/card';
+import { unionBy } from 'lodash';
+import { CreditCardOutlined } from '@ant-design/icons';
+import { getCardName } from '@/utils/constants';
 import style from './index.module.less';
 
 const ConsumeCard = ({
@@ -11,11 +17,18 @@ const ConsumeCard = ({
 }: IProps) => {
   const [selectedCards, setSelectedCards] = useState<string[]>([]); // 选中的消费卡id数组
   const { data: product, loading: getProductLoading } = useProductInfo(id || '');
-  console.log('product: ', product);
+  const { data: cards, loading: getCardsLoading, getCards } = useLazyCards();
+
   const onOkHandler = async () => {};
 
-  const onSelectedHandler = (val) => {
-    console.log('val: ', val);
+  // 当前商品已经关联的cards，和搜索结果 去重合并
+  const newCards = useMemo(
+    () => unionBy(product?.cards || [], cards, 'id'),
+    [product?.cards, cards],
+  );
+
+  const onSelectedHandler = (courseId: string) => {
+    getCards(courseId);
   };
 
   return (
@@ -31,15 +44,60 @@ const ConsumeCard = ({
       </Row>
 
       <Row justify="center" className={style.content}>
+        {newCards.length === 0
+          && (
+          <Result
+            status="warning"
+            title="请搜索课程并选择对应的消费卡"
+          />
+          )}
         <CheckCard.Group
-          loading={getProductLoading}
+          loading={getProductLoading || getCardsLoading}
           multiple
           onChange={(value) => {
             setSelectedCards(value as string[]);
           }}
           value={selectedCards}
         >
-          <CheckCard />
+          {
+            newCards.map((item) => (
+              <CheckCard
+                className={style['ant-pro-checkcard-title']}
+                key={item.id}
+                value={item.id}
+                size="small"
+                avatar={<CreditCardOutlined />}
+                title={(
+                  <>
+                    <Space>
+                      <Typography.Text
+                        ellipsis
+                        className={style.name}
+                      >
+                        {item.course?.name}
+                      </Typography.Text>
+                    </Space>
+                    <div>
+                      {item.name}
+                      {getCardName(item.type)}
+                    </div>
+                  </>
+                )}
+                description={(
+                  <Space>
+                    <span>
+                      次数：
+                      {item.time}
+                    </span>
+                    <span>
+                      有效期：
+                      {item.validityDay}
+                    </span>
+                  </Space>
+                )}
+              />
+            ))
+          }
         </CheckCard.Group>
       </Row>
     </Modal>

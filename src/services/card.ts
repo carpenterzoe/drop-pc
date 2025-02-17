@@ -1,5 +1,5 @@
 import { COMMIT_CARD, DELETE_CARD, GET_CARDS } from '@/graphql/card';
-import { useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { message } from 'antd';
 
 /**
@@ -18,6 +18,24 @@ export const useCards = (id: string) => {
     data: data?.getCards.data,
     loading,
     refetch,
+  };
+};
+
+// 手动触发，根据 courseId 获取 cards
+export const useLazyCards = () => {
+  const [get, { data, loading }] = useLazyQuery(GET_CARDS);
+
+  const getCards = (courseId: string) => {
+    get({
+      variables: {
+        courseId,
+      },
+    });
+  };
+  return {
+    loading,
+    data: data?.getCards.data,
+    getCards,
   };
 };
 
