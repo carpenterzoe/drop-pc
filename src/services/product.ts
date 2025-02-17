@@ -1,5 +1,6 @@
 import {
   COMMIT_PRODUCT,
+  DEL_PRODUCT,
   GET_PRODUCT,
   GET_PRODUCTS,
 } from '@/graphql/product';
@@ -56,7 +57,10 @@ export const useProducts = (
 };
 
 // 编辑商品信息
-export const useEditProductInfo = (): [handleEdit: any, loading: boolean] => {
+export const useEditProductInfo = (): [
+  handleEdit: (id: string, params: TBaseProduct, callback: ()=> void) => void,
+  loading: boolean,
+] => {
   const [edit, { loading }] = useMutation(COMMIT_PRODUCT);
   const handleEdit = async (id: string, params: TBaseProduct, callback: ()=> void) => {
     const res = await edit({
@@ -105,4 +109,29 @@ export const useProductInfo = (id: string) => {
     loading,
     refetch: refetchHandler,
   };
+};
+
+// 删除商品信息
+export const useDeleteProduct = (): [
+  delHandler: (id: string, callback: () => void) => void,
+  loading: boolean,
+] => {
+  const [del, { loading }] = useMutation(DEL_PRODUCT);
+  const delHandler = async (id: string, callback: () => void) => {
+    const res = await del({
+      variables: {
+        id,
+      },
+    });
+    if (res.data.deleteProduct.code === 200) {
+      message.success(res.data.deleteProduct.message);
+      // setTimeout(() => {
+      callback();
+      // }, 1000);
+      return;
+    }
+    message.error(res.data.deleteProduct.message);
+  };
+
+  return [delHandler, loading];
 };

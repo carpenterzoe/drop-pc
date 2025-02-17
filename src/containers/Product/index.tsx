@@ -3,7 +3,7 @@ import { DEFAULT_PAGE_SIZE } from '@/utils/constants';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import { useRef, useState } from 'react';
-import { useProducts } from '@/services/product';
+import { useProducts, useDeleteProduct } from '@/services/product';
 import { getColumns } from './constant';
 import EditProduct from './components/EditProduct';
 
@@ -12,6 +12,7 @@ import EditProduct from './components/EditProduct';
 */
 const Product = () => {
   const { data, refetch, loading } = useProducts();
+  const [del, deleteLoading] = useDeleteProduct();
   const [showInfo, setShowInfo] = useState(false);
   const [curId, setCurId] = useState('');
   const actionRef = useRef<ActionType>();
@@ -21,7 +22,9 @@ const Product = () => {
   };
   const onCardHandler = () => {};
 
-  const onDeleteHandler = () => {};
+  const onDeleteHandler = (id: string) => {
+    del(id, () => actionRef.current?.reload());
+  };
 
   const closeAndRefetchHandler = (isReload?: boolean) => {
     setShowInfo(false);
@@ -42,7 +45,7 @@ const Product = () => {
         form={{
           ignoreRules: false,
         }}
-        loading={loading}
+        loading={loading || deleteLoading}
         columns={getColumns({
           onEditHandler,
           onCardHandler,
