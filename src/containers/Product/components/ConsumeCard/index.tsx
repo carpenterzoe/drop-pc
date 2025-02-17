@@ -1,7 +1,9 @@
-import { Modal } from 'antd';
+import { Modal, Row } from 'antd';
 import { useProductInfo } from '@/services/product';
 import { useState } from 'react';
 import { CheckCard } from '@ant-design/pro-components';
+import CourseSearch from '@/components/CourseSearch';
+import style from './index.module.less';
 
 const ConsumeCard = ({
   onClose,
@@ -12,6 +14,10 @@ const ConsumeCard = ({
   console.log('product: ', product);
   const onOkHandler = async () => {};
 
+  const onSelectedHandler = (val) => {
+    console.log('val: ', val);
+  };
+
   return (
     <Modal
       title="绑定消费卡"
@@ -20,16 +26,22 @@ const ConsumeCard = ({
       onCancel={() => onClose()}
       onOk={onOkHandler}
     >
-      <CheckCard.Group
-        loading={getProductLoading}
-        multiple
-        onChange={(value) => {
-          setSelectedCards(value as string[]);
-        }}
-        value={selectedCards}
-      >
-        <CheckCard />
-      </CheckCard.Group>
+      <Row justify="end">
+        <CourseSearch onSelected={onSelectedHandler} />
+      </Row>
+
+      <Row justify="center" className={style.content}>
+        <CheckCard.Group
+          loading={getProductLoading}
+          multiple
+          onChange={(value) => {
+            setSelectedCards(value as string[]);
+          }}
+          value={selectedCards}
+        >
+          <CheckCard />
+        </CheckCard.Group>
+      </Row>
     </Modal>
   );
 };
