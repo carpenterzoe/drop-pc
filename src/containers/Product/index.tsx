@@ -5,6 +5,7 @@ import { Button } from 'antd';
 import { useRef, useState } from 'react';
 import { useProducts } from '@/services/product';
 import { getColumns } from './constant';
+import EditProduct from './components/EditProduct';
 
 /**
 *   产品信息
@@ -13,15 +14,22 @@ const Product = () => {
   const { data, refetch, loading } = useProducts();
   const [showInfo, setShowInfo] = useState(false);
   const [curId, setCurId] = useState('');
-  console.log(showInfo, curId);
   const actionRef = useRef<ActionType>();
-  const onEditHandler = (id: string) => {
-    setCurId(id);
+  const onEditHandler = (id?: string) => {
+    setCurId(id || '');
     setShowInfo(true);
   };
   const onCardHandler = () => {};
 
   const onDeleteHandler = () => {};
+
+  const closeAndRefetchHandler = (isReload?: boolean) => {
+    setShowInfo(false);
+    if (isReload) {
+      // antd pro 组件的，手动触发刷新方法
+      actionRef.current?.reload();
+    }
+  };
 
   return (
     <PageContainer
@@ -46,11 +54,18 @@ const Product = () => {
         }}
         request={refetch}
         toolBarRender={() => [
-          // onClick={() => onEditHandler()}
-          <Button key="add" type="primary" icon={<PlusOutlined />}>新建</Button>,
+          <Button onClick={() => onEditHandler()} key="add" type="primary" icon={<PlusOutlined />}>新建</Button>,
         ]}
         actionRef={actionRef}
       />
+
+      {showInfo && (
+        <EditProduct
+          id={curId}
+          onClose={closeAndRefetchHandler}
+        />
+      )}
+
     </PageContainer>
   );
 };

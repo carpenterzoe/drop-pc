@@ -1,8 +1,12 @@
 import {
+  COMMIT_PRODUCT,
+  GET_PRODUCT,
   GET_PRODUCTS,
 } from '@/graphql/product';
 import { DEFAULT_PAGE_SIZE } from '@/utils/constants';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
+import { App } from 'antd';
+import { useMemo } from 'react';
 
 export const useProducts = (
   pageNum: number = 1,
@@ -48,5 +52,58 @@ export const useProducts = (
     refetch: refetchHandler,
     page: data?.getProducts.page,
     data: data?.getProducts.data,
+  };
+};
+
+// 编辑商品信息
+export const useEditProductInfo = (): [handleEdit: any, loading: boolean] => {
+  const [edit, { loading }] = useMutation(COMMIT_PRODUCT);
+  const { message } = App.useApp();
+  const handleEdit = async (id: string, params: TBaseProduct, callback: ()=> void) => {
+    const res = await edit({
+      variables: {
+        id,
+        params,
+      },
+    });
+    if (res.data.commitProductInfo.code === 200) {
+      message.success(res.data.commitProductInfo.message);
+      callback();
+      return;
+    }
+    message.error(res.data.commitProductInfo.message);
+  };
+  return [handleEdit, loading];
+};
+
+// 获取商品信息 及时获取商品信息
+export const useProductInfo = (id: string) => {
+  const { data, loading, refetch } = useQuery<TProductQuery>(GET_PRODUCT, {
+    skip: !id, // id不存在跳过请求
+    variables: {
+      id,
+    },
+  });
+
+  const refetchHandler = async () => {
+    const res = await refetch();
+    const newData = {
+      ...res.data?.getProductInfo.data,
+      coverUrl: [{ url: res.data?.getProductInfo.data.coverUrl }],
+      bannerUrl: [{ url: res.data?.getProductInfo.data.bannerUrl }],
+    };
+    return res.data?.getProductInfo.data ? newData : undefined;
+  };
+
+  // 对返回的数据进行数组的包裹
+  const newData = useMemo(() => ({
+    ...data?.getProductInfo.data,
+    coverUrl: [{ url: data?.getProductInfo.data.coverUrl }],
+    bannerUrl: [{ url: data?.getProductInfo.data.bannerUrl }],
+  }), [data]);
+  return {
+    data: data?.getProductInfo.data ? newData : undefined,
+    loading,
+    refetch: refetchHandler,
   };
 };

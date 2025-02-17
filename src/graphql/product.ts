@@ -49,19 +49,7 @@ export const GET_PRODUCT = gql`
         desc
         originalPrice
         stock
-        status
         preferentialPrice
-        cards{
-          id
-          name
-          type
-          time
-          validityDay
-          course {
-            id
-            name
-          }
-        }
       }
     }
   }

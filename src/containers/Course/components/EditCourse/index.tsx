@@ -9,11 +9,6 @@ import { useEffect } from 'react';
 
 const { TextArea } = Input;
 
-interface IProps {
-  id?: string;
-  onClose: (isReload?: boolean) => void;
-}
-
 /**
  * ! 1. EditCourse useEffect 的优化，把数据处理都包在service中，让组件的逻辑保持简单
  * 2. useEffect 第一个参数，不能直接包async，会报错
