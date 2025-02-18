@@ -2,7 +2,7 @@ import {
   Modal, Result, Row, Space, Typography,
 } from 'antd';
 import { useEditProductInfo, useProductInfo } from '@/services/product';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CheckCard } from '@ant-design/pro-components';
 import CourseSearch from '@/components/CourseSearch';
 import { useLazyCards } from '@/services/card';
@@ -19,6 +19,11 @@ const ConsumeCard = ({
   const { data: product, loading: getProductLoading } = useProductInfo(id || '');
   const { data: cards, loading: getCardsLoading, getCards } = useLazyCards();
   const [edit, editLoading] = useEditProductInfo();
+
+  // 商品已有关联消费卡时，查回来默认选中
+  useEffect(() => {
+    setSelectedCards(product?.cards?.map((item) => item.id) || []);
+  }, [product?.cards]);
 
   const onOkHandler = async () => {
     edit(
