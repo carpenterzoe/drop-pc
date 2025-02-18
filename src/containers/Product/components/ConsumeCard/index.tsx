@@ -81,6 +81,13 @@ const ConsumeCard = ({
                         ellipsis
                         className={style.name}
                       >
+                        {/*
+                          product card course 是三层关联关系
+                          1. product & card ManyToMany
+                          2. card & course ManyToOne
+
+                          这里接口查询product时，只关联了cards，没有关联course，所以一开始查不到课程名称
+                         */}
                         {item.course?.name}
                       </Typography.Text>
                     </Space>
