@@ -77,6 +77,11 @@ interface IProduct {
 
 type TBaseProduct = Partial<IProduct>;
 
+interface ICardInput {
+  cards: string[];
+}
+type TBaseProductInput = Partial<IProduct | ICardInput>;
+
 type TProductsQuery = { [key: string]: { __typename?: 'Query', data: IProduct[], page: IPage } };
 
 type TProductQuery = { [key: string]: { __typename?: 'Query', data: IProduct } };

@@ -1,7 +1,7 @@
 import {
   Modal, Result, Row, Space, Typography,
 } from 'antd';
-import { useProductInfo } from '@/services/product';
+import { useEditProductInfo, useProductInfo } from '@/services/product';
 import { useMemo, useState } from 'react';
 import { CheckCard } from '@ant-design/pro-components';
 import CourseSearch from '@/components/CourseSearch';
@@ -18,8 +18,15 @@ const ConsumeCard = ({
   const [selectedCards, setSelectedCards] = useState<string[]>([]); // 选中的消费卡id数组
   const { data: product, loading: getProductLoading } = useProductInfo(id || '');
   const { data: cards, loading: getCardsLoading, getCards } = useLazyCards();
+  const [edit, editLoading] = useEditProductInfo();
 
-  const onOkHandler = async () => {};
+  const onOkHandler = async () => {
+    edit(
+      product?.id as string,
+      { cards: selectedCards },
+      () => onClose(),
+    );
+  };
 
   // 当前商品已经关联的cards，和搜索结果 去重合并
   const newCards = useMemo(
@@ -52,7 +59,7 @@ const ConsumeCard = ({
           />
           )}
         <CheckCard.Group
-          loading={getProductLoading || getCardsLoading}
+          loading={getProductLoading || getCardsLoading || editLoading}
           multiple
           onChange={(value) => {
             setSelectedCards(value as string[]);

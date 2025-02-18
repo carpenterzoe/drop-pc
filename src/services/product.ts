@@ -58,7 +58,7 @@ export const useProducts = (
 
 // 编辑商品信息
 export const useEditProductInfo = (): [
-  handleEdit: (id: string, params: TBaseProduct, callback: ()=> void) => void,
+  handleEdit: (id: string, params: TBaseProductInput, callback: ()=> void) => void,
   loading: boolean,
 ] => {
   const [edit, { loading }] = useMutation(COMMIT_PRODUCT);
