@@ -42,6 +42,8 @@ function getCxtProvider<T>(
       key,
       store,
       // 增量更新，避免setStore时把已有的值覆盖
+      // 这里是接收入参，调用 useState 的 setStore
+      // useState 的 setStore 参数中传递更新函数，以拿到最新的state
       setStore: (payload = {}) => setStore((state) => ({
         ...state,
         ...payload,

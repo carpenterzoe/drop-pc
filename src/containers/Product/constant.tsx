@@ -6,17 +6,25 @@ import {
 interface IProps {
   onEditHandler: (id: string) => void,
   onCardHandler: (id: string) => void,
-  onDeleteHandler: (id: string) => void
+  onDeleteHandler: (id: string) => void,
+  onStatusChangeHandler: (id: string, status: string) => void
 }
+
+const PRODUCT_STATUS = {
+  LIST: 'LIST',
+  UN_LIST: 'UN_LIST',
+};
 
 export const getColumns: ({
   onEditHandler,
   onCardHandler,
   onDeleteHandler,
+  onStatusChangeHandler,
 }: IProps) => ProColumns<IProduct, 'text'>[] = ({
   onEditHandler,
   onCardHandler,
   onDeleteHandler,
+  onStatusChangeHandler,
 }) => [
   {
     dataIndex: 'id',
@@ -96,6 +104,31 @@ export const getColumns: ({
     align: 'center',
     render: (_text, entity) => [
       <Space key="space" size="small">
+        {entity.status === PRODUCT_STATUS.UN_LIST
+          ? (
+            <Button
+              key="list"
+              type="link"
+              style={{
+                color: 'green',
+              }}
+              onClick={() => onStatusChangeHandler(entity.id, PRODUCT_STATUS.LIST)}
+            >
+              上架
+            </Button>
+          )
+          : (
+            <Button
+              key="unList"
+              type="link"
+              style={{
+                color: 'red',
+              }}
+              onClick={() => onStatusChangeHandler(entity.id, PRODUCT_STATUS.UN_LIST)}
+            >
+              下架
+            </Button>
+          )}
         <Button
           key="edit"
           type="link"

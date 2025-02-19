@@ -3,7 +3,7 @@ import { DEFAULT_PAGE_SIZE } from '@/utils/constants';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import { useRef, useState } from 'react';
-import { useProducts, useDeleteProduct } from '@/services/product';
+import { useProducts, useDeleteProduct, useEditProductInfo } from '@/services/product';
 import { getColumns } from './constant';
 import EditProduct from './components/EditProduct';
 import ConsumeCard from './components/ConsumeCard';
@@ -16,6 +16,8 @@ const Product = () => {
   const [del, deleteLoading] = useDeleteProduct();
   const [showInfo, setShowInfo] = useState(false);
   const [showCard, setShowCard] = useState(false);
+  const [edit, editLoading] = useEditProductInfo();
+
   const [curId, setCurId] = useState('');
   const actionRef = useRef<ActionType>();
   const onEditHandler = (id?: string) => {
@@ -40,6 +42,12 @@ const Product = () => {
     }
   };
 
+  const onStatusChangeHandler = (id: string, status: string) => {
+    edit(id, {
+      status,
+    }, () => actionRef.current?.reload());
+  };
+
   return (
     <PageContainer
       header={{
@@ -51,11 +59,12 @@ const Product = () => {
         form={{
           ignoreRules: false,
         }}
-        loading={loading || deleteLoading}
+        loading={loading || deleteLoading || editLoading}
         columns={getColumns({
           onEditHandler,
           onCardHandler,
           onDeleteHandler,
+          onStatusChangeHandler,
         })}
         dataSource={data}
         pagination={{
