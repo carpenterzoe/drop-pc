@@ -4,10 +4,10 @@ import {
   Divider,
   Drawer, Form, Input, InputNumber, Row, Space, Spin,
 } from 'antd';
-import UploadImage from '@/components/OSSImageUpload';
+// import UploadImage from '@/components/OSSImageUpload';
 import { useEditProductInfo, useProductInfo } from '@/services/product';
 import { useEffect, useState } from 'react';
-// import TypeSelect from '@/components/TypeSelect';
+import TypeSelect from '@/components/TypeSelect';
 
 const { TextArea } = Input;
 
@@ -36,12 +36,14 @@ const EditProduct = ({
   }, [id]);
 
   const onSubmitHandler = async () => {
-    const values = await form.validateFields();
+    const values = await form.validateFields(); // Form表单绑定的值都在values，不需要额外再传值或者更新操作
     if (values) {
       const newValues = {
         ...values,
-        coverUrl: values.coverUrl[0].url,
-        bannerUrl: values.bannerUrl[0].url,
+        // coverUrl: values.coverUrl[0].url,
+        // bannerUrl: values.bannerUrl[0].url,
+        coverUrl: 'http://drop-assets-zoe.oss-cn-shenzhen.aliyuncs.com/images/rc-upload-1739773562061-9.jpg',
+        bannerUrl: 'http://drop-assets-zoe.oss-cn-shenzhen.aliyuncs.com/images/rc-upload-1739773562061-9.jpg',
       };
       edit(id, newValues, () => onClose(true));
     }
@@ -82,7 +84,6 @@ const EditProduct = ({
           <Row gutter={20}>
             <Col span={18}>
               <Form.Item
-                style={{ width: '100%' }}
                 label="名称"
                 name="name"
                 rules={[{ required: true }]}
@@ -90,15 +91,16 @@ const EditProduct = ({
                 <Input />
               </Form.Item>
             </Col>
-            {/* <Col span={6}>
+            <Col span={6}>
               <Form.Item
                 label="商品分类"
                 name="type"
                 rules={[{ required: true }]}
               >
+                {/* value, onChange 是Form.Item 透传的，所以这里不需要自己额外传 */}
                 <TypeSelect />
               </Form.Item>
-            </Col> */}
+            </Col>
           </Row>
           <Row gutter={20}>
             <Col span={6}>
@@ -151,7 +153,7 @@ const EditProduct = ({
             />
           </Form.Item>
           <Divider>图片设置</Divider>
-          <Row gutter={20}>
+          {/* <Row gutter={20}>
             <Col span={12}>
               <Form.Item
                 name="coverUrl"
@@ -182,7 +184,7 @@ const EditProduct = ({
                 />
               </Form.Item>
             </Col>
-          </Row>
+          </Row> */}
         </Form>
       </Spin>
     </Drawer>

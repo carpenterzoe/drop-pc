@@ -2,6 +2,7 @@ import {
   COMMIT_PRODUCT,
   DEL_PRODUCT,
   GET_PRODUCT,
+  GET_PRODUCT_TYPES,
   GET_PRODUCTS,
 } from '@/graphql/product';
 import { DEFAULT_PAGE_SIZE } from '@/utils/constants';
@@ -62,7 +63,7 @@ export const useEditProductInfo = (): [
   loading: boolean,
 ] => {
   const [edit, { loading }] = useMutation(COMMIT_PRODUCT);
-  const handleEdit = async (id: string, params: TBaseProduct, callback: ()=> void) => {
+  const handleEdit = async (id: string, params: TBaseProductInput, callback: ()=> void) => {
     const res = await edit({
       variables: {
         id,
@@ -134,4 +135,13 @@ export const useDeleteProduct = (): [
   };
 
   return [delHandler, loading];
+};
+
+export const useProductTypes = () => {
+  const { data, loading } = useQuery<TProductTypeQuery>(GET_PRODUCT_TYPES);
+
+  return {
+    data: data?.getProductTypes.data || [],
+    loading,
+  };
 };
