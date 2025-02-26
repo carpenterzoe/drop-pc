@@ -2,12 +2,14 @@ import { useUserContext } from '@/hooks/userHooks';
 import { PageContainer } from '@ant-design/pro-components';
 import { useOrganization } from '@/services/org';
 import {
-  Button, Card, Col, DatePicker, Row, message,
+  Button, Calendar, Card, Col, DatePicker, Row, message,
 } from 'antd';
 import { useState } from 'react';
 import type { Dayjs } from 'dayjs';
 import { DAY_FORMAT } from '@/utils/constants';
 import { useAutoCreateSchedule } from '@/services/dashboard';
+import dayjs from 'dayjs';
+import Schedule from './components/Schedule';
 
 const { RangePicker } = DatePicker;
 
@@ -20,6 +22,8 @@ const Home = () => {
   const { store } = useUserContext();
   const { data: org } = useOrganization(store.currentOrg || '');
   const [run, loading] = useAutoCreateSchedule();
+  const [day, setDay] = useState<string>(dayjs().format(DAY_FORMAT));
+
   if (!org) {
     return null;
   }
@@ -49,6 +53,7 @@ const Home = () => {
         <Row gutter={20}>
           <Col flex="auto">
             <Card
+              title={`${day} 的课程`}
               extra={
               (
                 <span>
@@ -64,8 +69,14 @@ const Home = () => {
               )
             }
             >
-              {/* <Schedule day={day} /> */}
+              <Schedule day={day} />
             </Card>
+          </Col>
+          <Col flex="300px">
+            <Calendar
+              fullscreen={false}
+              onChange={(d) => setDay(d.format(DAY_FORMAT))}
+            />
           </Col>
         </Row>
       </PageContainer>

@@ -19,24 +19,9 @@ query getSchedules($today: String!) {
       startTime
       endTime
       limitNumber
-      scheduleRecords {
-        id
-        status
-        student {
-          id
-          name
-          avatar
-        }
-      }
       course {
         id
         name
-        coverUrl
-        teachers {
-          id
-          name
-          photoUrl
-        }
       }
     }
     page {

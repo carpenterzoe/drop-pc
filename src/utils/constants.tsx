@@ -23,3 +23,8 @@ export const getCardName = (type: string) => {
 };
 
 export const DAY_FORMAT = 'YYYY-MM-DD';
+
+// 预约课程状态
+export const SCHEDULE_STATUS = {
+  CANCEL: 'CANCEL',
+};
