@@ -21,3 +21,5 @@ export const getCardName = (type: string) => {
       return '-';
   }
 };
+
+export const DAY_FORMAT = 'YYYY-MM-DD';

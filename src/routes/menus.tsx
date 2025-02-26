@@ -31,8 +31,9 @@ export const ROUTE_KEY = {
  */
 export const ROUTE_CONFIG: Record<string, IRoute> = {
   [ROUTE_KEY.HOME]: {
-    path: 'home', // 这里没有斜杠，因为Layout已经写了
+    path: '/', // 这里没有斜杠，因为Layout已经写了
     name: '首页',
+    hideInMenu: true,
     icon: <HomeOutlined />,
   },
   [ROUTE_KEY.ORG]: {
